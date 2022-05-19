@@ -8,6 +8,9 @@ const pbr = document.createElement('br')
 var var_index = 0
 var glcVars = []
 var glcTerms = []
+const vars =  ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","T","U","V","W","X","Y","Z"]
+
+
 
 keys.addEventListener('click', e => {
   if (e.target.matches('button')) {
@@ -20,7 +23,7 @@ keys.addEventListener('click', e => {
     const displayedArrow = arrow_display.textContent
     var displayedGLC = displayGLC.textContent
     const previousKeyType = calculator.dataset.previousKeyType
-    const vars =  ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","T","U","V","W","X","Y","Z"]
+ 
     var usedVars = []
     
     if (!action) {
@@ -80,8 +83,67 @@ keys.addEventListener('click', e => {
     
     if (action == 'calculate') {
       console.log('calculate key')
+      values = dictToClass( AdapterArraysToDict(glcTerms,glcVars))
+      values.chomskyNormalize()
+      console.log(values.productions)
+      
     }
   }
 })
 
+
+  const AdapterArraysToDict = (terminals,variables) =>{
+
+    mappedValues = {}
+
+    for (let index = 0; index < terminals.length ; index++){
+
+      let term = terminals[index]
+      let varb = variables[index]
+      if(!Object.keys(mappedValues).includes(varb)){
+        mappedValues[varb] = [term]
+        continue
+      }
+      mappedValues[varb].push(term)
+
+    }
+
+    return mappedValues
+
+  }
+
+  
+
+ const  dictToClass = (dict)=>{
+   ClassProductions = []
+
+   for (const [variable,productions] of Object.entries(dict)){
+      prodElements = []
+      for (const prod of productions){
+        prodElements = []
+        console.log(prod)
+        for (const component of prod.split("")){
+          
+          if(isTerminal(component)){
+          prodElements.push( new Terminal(component))
+          continue
+          }
+          prodElements.push(new Variable(component))
+        }
+        ClassProductions.push(new Production(variable,prodElements))
+        
+      }
+      console.log(ClassProductions)
+      return new GLC(ClassProductions,glcVars[0])
+
+   }
+
+
+
+ }
+
+
+ const isTerminal  = (value)=>{
+    return !vars.includes(value.toUpperCase())
+ }
 

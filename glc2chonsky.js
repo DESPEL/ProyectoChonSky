@@ -84,9 +84,9 @@ class Terminal {
   }
 }
 
-const S0 = Variable("__VARIABLE_S0_FOR_CHOMSKY_OLA__")
+const S0 = new Variable("__VARIABLE_S0_FOR_CHOMSKY_OLA__")
 class GLC {
-  productions
+  productions =[]
   dependencyMapping = {}
   variableMapping = {}
   s0
@@ -117,7 +117,7 @@ class GLC {
   }
   updateVariableMapping(production) {
     if (!Object.keys(this.variableMapping).includes(production.variable.value))
-      this.variableMapping[production.variable.value] = production.variable.value
+      this.variableMapping[production.variable.value] = [production.variable.value]
     this.variableMapping[production.variable.value].push(production)
   }
   addProduction(production) {
@@ -147,13 +147,15 @@ class GLC {
     // Chomsky step 5: Replace terminals with variables because yea
     log.step5 = this.chomskyStep5()
     // Remove duplicated rules
-    log.step5dedupe = this.dedupe()
+   
+
+    console.log(log)
   }
 
   chomskyStep1() {
     let log = []
 
-    const newProduction = Production(S0, [this.s0])
+    const newProduction = new Production(S0, [this.s0])
     this.addProduction(newProduction)
     log.push({
       what: 'ADDED_S0_PRODUCTION',
@@ -223,7 +225,7 @@ class GLC {
               result.push(dependency.result[i])
             }
           }
-          newProductions.push(Production(dependency.variable, result))
+          newProductions.push(new Production(dependency.variable, result))
         }
 
         // then, we add the productions to the GLC
@@ -323,17 +325,17 @@ class GLC {
       // Y -> A1X1, X1 -> A2X2, X2 -> A3X3, ..., XN-2 -> A_N-1A_N
       let newProductions = []
       if (production.result.length != 2) {
-        newProductions.push(Production(production.variable, [production.result[0], Variable(`X_${currentX}`)]))
+        newProductions.push(new Production(production.variable, [production.result[0], new Variable(`X_${currentX}`)]))
         currentX++
       } else {
-        newProductions.push(Production(production.variable, production.result))
+        newProductions.push(new Production(production.variable, production.result))
       }
       for (let i = 1; i < production.result.length - 2; i++) {
-        newProductions.push(Production(Variable(`X_${currentX}`), [production.result[i],Variable(`X_${currentX+1}`)]))
+        newProductions.push(new Production(Variable(`X_${currentX}`), [production.result[i], new Variable(`X_${currentX+1}`)]))
         currentX++
       }
       if (production.result.length != 2) {
-        newProductions.push(Production(`X_${currentX}`, [production.result[production.result.length-2], production.result[production.result.length-1]]))
+        newProductions.push(new Production(`X_${currentX}`, [production.result[production.result.length-2], production.result[production.result.length-1]]))
         currentX++
       }
 
@@ -367,7 +369,7 @@ class GLC {
       for (const partial of production.result) {
         if (partial instanceof Terminal) {
           if (!Object.keys(terminalMapping).includes(partial.value)) {
-            terminalMapping[partial.value] = Terminal(`Z_${currentZ}`)
+            terminalMapping[partial.value] = new Terminal(`Z_${currentZ}`)
             currentZ++
           }
           newResult.push(terminalMapping[partial.value])
@@ -375,7 +377,7 @@ class GLC {
           newResult.push(partial)
         }
       }
-      let newProduction = Production(production.variable, newResult)
+      let newProduction = new Production(production.variable, newResult)
       this.addProduction(newProduction)
 
       log.push({
@@ -457,7 +459,7 @@ class GLC {
   }
 
   duplicateGLC() {
-    return GLC(
+    return new GLC(
       Array.from(this.productions),
       this.s0
     )
@@ -472,9 +474,9 @@ function normalizeProductionResult(resultString) {
   let normalizedProductions = []
   for (const c of resultString) {
     if (variableStrings.includes(c)) {
-      normalizedProductions.push(Variable(c))
+      normalizedProductions.push(new Variable(c))
     } else {
-      normalizedProductions.push(Terminal(c))
+      normalizedProductions.push(new Terminal(c))
     }
   }
   return normalizedProductions
@@ -487,13 +489,13 @@ function normalizeGLC(glcVars, glcTerms, s0) {
   let productions = []
 
   for (const [glvar, glres] of zip(glcVars, glcTerms)) {
-    const variable = Variable(glvar)
+    const variable = new Variable(glvar)
     const result = normalizeProductionResult(glres)
-    const production = Production(variable, result)
+    const production = new Production(variable, result)
     productions.push(production)
   }
 
   // Then, we create a GLC with the production list and s0
-  let glc = GLC(productions, Variable(s0))
+  let glc = new GLC(productions, new Variable(s0))
 }
 
