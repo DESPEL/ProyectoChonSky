@@ -5,35 +5,36 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <link rel="stylesheet" href="index.css">
   <title>Document</title>
 </head>
 
 <body>
   <div class='container'>
-    <script type="text/javascript" src="https://www.maths.nottingham.ac.uk/plp/pmadw/LaTeXMathML.js">
+    <script type="text/javascript"
+    src="https://www.maths.nottingham.ac.uk/plp/pmadw/LaTeXMathML.js">
     </script>
     <div class='fcgcalculator'>
       <div class='parent_div'>
         <div class='variable__display' contenteditable="true">S</div>
         <div class='arrow__display'>$\rightarrow$</div>
         <div class='calculator__display1' contenteditable="true"></div>
-      </div>
+        </div>
       <div class='calculator__keys'>
         <button class='bn1' data-action='add_rule'>Add rule</button>
-        <button class='bn1'>|</button>
-        <button class='bn1'>$\epsilon</button>
+        <button class='bn1' >|</button>
+        <button class='bn1 bepsilon' >$\epsilon$</button>
         <button class='bn1' data-action='clear'>Clear</button>
         <button class='key--calculate' data-action='calculate'>Calculate</button>
       </div>
-      <div class='calculator__display2'>Your Free Context Grammar will show here:</div>
+  
+    <div class='calculator__display2'>Your Free Context Grammar will show here:</div>
       <p class='calculator__display3'></p>
     </div>
   </div>
   </div>
-
   <script src="utils.js"></script>
+  <script src="glc2chonsky.js"></script>
   <script src="index.js"></script>
 </body>
 

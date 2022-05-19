@@ -5,6 +5,7 @@ const displayVar = document.querySelector('.variable__display')
 const arrow_display = document.querySelector('.arrow__display')
 const displayGLC = document.querySelector('.calculator__display3')
 const pbr = document.createElement('br')
+const epsilon = document.querySelector('.bepsilon')
 var var_index = 0
 var glcVars = []
 var glcTerms = []
@@ -15,6 +16,7 @@ keys.addEventListener('click', e => {
     const key = e.target
     const action = key.dataset.action
     const keyContent = key.textContent
+    const displayedEpsilon = epsilon.textContent
     const displayedVar = displayVar.textContent
     const displayedChar = display.textContent
     const displayedArrow = arrow_display.textContent
@@ -79,9 +81,9 @@ keys.addEventListener('click', e => {
     }
     
     if (action == 'calculate') {
-      console.log('calculate key')
+      console.log("Calculate ? idk")
+      let glc = normalizeGLC(glcVars, glcTerms, "S")
+      console.log(glc.chomsky())
     }
   }
 })
-
-
