@@ -219,8 +219,12 @@ class GLC {
           if (partial.value == production.variable.value)
             indices.push(i)
         }
+
+        
         // then, we create the powerset without []
         let idxPowerset = powerset(indices)
+
+        
         // the powerset now contains the replacements that we are going to perform over the productions
         // and the productionWithoutEpsilon.result contains the value to add
         let newProductions = []
