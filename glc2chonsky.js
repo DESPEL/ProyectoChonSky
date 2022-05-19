@@ -224,12 +224,16 @@ class GLC {
         // then, we create the powerset without []
         let idxPowerset = powerset(indices)
 
+        console.log(idxPowerset)
+
         
         // the powerset now contains the replacements that we are going to perform over the productions
         // and the productionWithoutEpsilon.result contains the value to add
         let newProductions = []
+
         for (const replaceIndices of idxPowerset) {
           let result = []
+          console.log(replaceIndices)
           for (let i = 0; i < dependency.result.length; i++) {
             if (replaceIndices.includes(i)) {
               // if we find the variable, we replace it with the result of the production
@@ -412,38 +416,41 @@ class GLC {
     return log
   }
   dedupe() {
-    let result = []
+    let logs = []
     let oldState = this.duplicateGLC()
-    for (const production of this.productions) {
-      let exists = true
-      for (const resProduction of result) {
-        if (resProduction.variable.value == production.variable.value) {
-          for (const [l, r] of zip(resProduction.result, production.result)) {
-            if (!((typeof l === typeof r) && (l?.value === r?.value))) {
-              exists = false
-              break
-            }
-          }
-        } else {
-          exists = false
-        }
-        if (!exists) {
-          break
-        }
+
+    let productionsDict = {}
+    
+    for (const actualProd of this.productions){
+      if(!Object.keys(productionsDict).includes(actualProd.variable)){
+        console.log("NEW VARIABLE",actualProd.variable,actualProd.result)
+        productionsDict[actualProd.variable] = [actualProd.result]
+        continue
       }
-      if (!exists) {
-        result.append(production)
+
+      if(!productionsDict[actualProd.variable].includes(actualProd.result)){
+        console.log("PUSHED VARIABLE",actualProd.variable,actualProd.result)
+        productionsDict[actualProd.variable].push(actualProd.result)
+        continue
+      }
+      logs.push(`REMOVED PRODUCTION ${actualProd.variable} -> ${actualProd.result.join()}`)
+      
+
+    }
+
+    let prods = []
+    console.log(productionsDict)
+    for (const [key,values] of Object.entries(productionsDict)){
+      for(const value of values){
+        prods.push(new Production(key,value))
       }
     }
-    for (const production of Array.from(this.productions)) {
-      this.removeProduction(production)
-    }
-    for (const production of result) {
-      this.addProduction(production)
-    }
+
+    this.productions = prods
 
     return [{
       what: 'DEDUPE_PRODUCTIONS',
+      logs: logs,
       oldState: oldState,
       newState: this.duplicateGLC()
     }]
