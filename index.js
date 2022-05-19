@@ -9,6 +9,9 @@ const epsilon = document.querySelector('.bepsilon')
 var var_index = 0
 var glcVars = []
 var glcTerms = []
+const vars =  ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","T","U","V","W","X","Y","Z"]
+
+
 
 keys.addEventListener('click', e => {
   if (e.target.matches('button')) {
@@ -22,7 +25,7 @@ keys.addEventListener('click', e => {
     const displayedArrow = arrow_display.textContent
     var displayedGLC = displayGLC.textContent
     const previousKeyType = calculator.dataset.previousKeyType
-    const vars =  ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","T","U","V","W","X","Y","Z"]
+ 
     var usedVars = []
     
     if (!action) {
