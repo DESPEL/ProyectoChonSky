@@ -156,6 +156,8 @@ class GLC {
     ////console.log(log)
     // Chomsky step 3: Remove transitivity
     log.step3 = this.chomskyStep3()
+
+    log.step3dedupe = this.dedupe()
     //console.log(log)
     // Chomsky step 4: Remove things with length more than 4
     log.step4 = this.chomskyStep4()
@@ -195,9 +197,10 @@ class GLC {
     console.log("S2 REMOVING EPSILON")
     let log = []
     // We first want to know the productions that have epsilon in its result
-    let productionsWithEpsilon = this.getProductionsWithEpsilons()
+    //let productionsWithEpsilon = this.getProductionsWithEpsilons()
 
-    for (const production of productionsWithEpsilon) {
+    while (this.hasEpsilonProductions()) {
+      const production = this.getEpsilonNotS0()
       // We remove the production with epsilon
       this.removeProduction(production)
       console.log("REMOVED ",production.resultString())
@@ -264,7 +267,7 @@ class GLC {
           if (newProduction.result.length >= 1)
             newProductions.push(newProduction)
           else 
-            newProductions.push(new Production(dependency.variable, Variable(EPSILON)))
+            newProductions.push(new Production(dependency.variable, [new Terminal(EPSILON)]))
             
         }
 
@@ -334,11 +337,14 @@ class GLC {
       // Then, we add the rules that are created by solving one iteration of the transitivity
       this.removeProduction(transitiveProduction)
       console.log("REMOVED ",transitiveProduction.resultString())
+      if (transitiveProduction.variable.value === transitiveProduction.result[0].value) {
+        continue
+      }
 
       const transitiveResults = this.variableMapping[transitiveProduction.result[0].value]
+      console.log(this.variableMapping)
       const newProductions = []
       for (const childProduction of transitiveResults) {
-        
         let prod = new Production(
           transitiveProduction.variable,
           childProduction.result
@@ -536,6 +542,19 @@ class GLC {
       Array.from(this.productions),
       this.s0
     )
+  }
+
+  getEpsilonNotS0() {
+    for (const production of this.productions) {
+      if (production.variable.value === this.s0.value) 
+        continue
+      if (production.hasEpsilon())
+        return production
+    }
+  }
+
+  hasEpsilonProductions() {
+    return this.getEpsilonNotS0() ? true : false
   }
 }
 
