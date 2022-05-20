@@ -445,8 +445,6 @@ class GLC {
       }
     }
 
-    console.log("deduped", deduped)
-
     this.productions = []
     this.variableMapping = []
     this.dependencyMapping = []
