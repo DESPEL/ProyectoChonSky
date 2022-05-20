@@ -434,7 +434,7 @@ class GLC {
     let deduped = []
     for (const actualProd of Array.from(this.productions)) {
       let alreadyExisting = false
-      for (const uniqueProduction of Array.from(this.productions)) {
+      for (const uniqueProduction of Array.from(deduped)) {
         if (areProductionsEqual(actualProd, uniqueProduction)) {
           alreadyExisting |= true
           break
@@ -445,9 +445,11 @@ class GLC {
       }
     }
 
-    for (const production of Array.from(this.productions)) {
-      this.removeProduction(production)
-    }
+    console.log("deduped", deduped)
+
+    this.productions = []
+    this.variableMapping = []
+    this.dependencyMapping = []
     for (const uniqueProduction of deduped) {
       this.addProduction(uniqueProduction)
     }
