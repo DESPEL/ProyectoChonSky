@@ -11,7 +11,7 @@ function powerset(elements) {
   // total 8
   result = []
   for (const element of elements) {
-    for (let i = 0; i < results.length; i++) {
+    for (let i = 0; i < result.length; i++) {
       result.push([...result[i], element])
     }
   }
