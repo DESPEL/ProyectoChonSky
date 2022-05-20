@@ -201,7 +201,7 @@ class GLC {
       // Then we add the new production without the epsilon
       // only if it produces one or more values
       const productionWithoutEpsilon = production.removeEpsilons()
-      if (production.result.length >= 1) {
+      if (productionWithoutEpsilon.result.length >= 1) {
         this.addProduction(productionWithoutEpsilon)
       }
 
@@ -218,6 +218,7 @@ class GLC {
       // we first find all the productions that depend on the variable that we want to remove
       const dependentProductions = Array.from(this.dependencyMapping[production.variable.value])
       // then, for each dependency we want to add new productions without the variable mapping
+      let newProductions = []
       for (const dependency of dependentProductions) {
 
         // first find the indices of the variables to remove
@@ -227,13 +228,21 @@ class GLC {
           if (partial.value == production.variable.value)
             indices.push(i)
         }
+
+        
         // then, we create the powerset without []
         let idxPowerset = powerset(indices)
+
+        console.log(idxPowerset)
+
+        
         // the powerset now contains the replacements that we are going to perform over the productions
         // and the productionWithoutEpsilon.result contains the value to add
-        let newProductions = []
+
+
         for (const replaceIndices of idxPowerset) {
           let result = []
+          console.log(replaceIndices)
           for (let i = 0; i < dependency.result.length; i++) {
             if (replaceIndices.includes(i)) {
               // if we find the variable, we replace it with the result of the production
@@ -243,7 +252,9 @@ class GLC {
               result.push(dependency.result[i])
             }
           }
-          newProductions.push(new Production(dependency.variable, result))
+          let newProduction = new Production(dependency.variable, result)
+          if (newProduction.result.length >= 1)
+            newProductions.push(newProduction)
         }
 
         // then, we add the productions to the GLC
@@ -416,38 +427,45 @@ class GLC {
     return log
   }
   dedupe() {
-    let result = []
+    let logs = []
     let oldState = this.duplicateGLC()
-    for (const production of this.productions) {
-      let exists = true
-      for (const resProduction of result) {
-        if (resProduction.variable.value == production.variable.value) {
-          for (const [l, r] of zip(resProduction.result, production.result)) {
-            if (!((typeof l === typeof r) && (l?.value === r?.value))) {
-              exists = false
-              break
-            }
-          }
-        } else {
-          exists = false
-        }
-        if (!exists) {
+
+    function areProductionsEqual(lhs, rhs) {
+      if (lhs.variable.value != rhs.variable.value)
+        return false
+      for(const [l, r] of zip(lhs.result, rhs.result)) {
+        if (typeof l != typeof r)
+          return false
+        if (l.value != r.value)
+          return false
+      }
+      return true
+    }
+    let deduped = []
+    for (const actualProd of Array.from(this.productions)) {
+      let alreadyExisting = false
+      for (const uniqueProduction of Array.from(deduped)) {
+        if (areProductionsEqual(actualProd, uniqueProduction)) {
+          logs.push("REMOVED PRODUCtiON",actualProd)
+          alreadyExisting |= true
           break
         }
       }
-      if (!exists) {
-        result.append(production)
+      if (!alreadyExisting) {
+        deduped.push(actualProd)
       }
     }
-    for (const production of Array.from(this.productions)) {
-      this.removeProduction(production)
-    }
-    for (const production of result) {
-      this.addProduction(production)
+
+    this.productions = []
+    this.variableMapping = []
+    this.dependencyMapping = []
+    for (const uniqueProduction of deduped) {
+      this.addProduction(uniqueProduction)
     }
 
     return [{
       what: 'DEDUPE_PRODUCTIONS',
+      logs: logs,
       oldState: oldState,
       newState: this.duplicateGLC()
     }]
