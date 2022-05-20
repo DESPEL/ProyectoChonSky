@@ -157,7 +157,6 @@ class GLC {
     console.log(log)
     // Remove duplicated rules
     log.step5dedupe = this.dedupe()
-    console.log(log)
 
     return log
   }
@@ -462,6 +461,12 @@ class GLC {
       newState: this.duplicateGLC()
     }]
     
+  }
+
+  prettyPrint() {
+    for (const v of Object.keys(this.variableMapping)) {
+      console.log(`${v}: `, this.variableMapping[v].map((v) => v.result.map(v=>v.value)))
+    }
   }
 
 
