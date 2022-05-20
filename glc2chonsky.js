@@ -419,34 +419,38 @@ class GLC {
     let logs = []
     let oldState = this.duplicateGLC()
 
-    let productionsDict = {}
-    
-    for (const actualProd of this.productions){
-      if(!Object.keys(productionsDict).includes(actualProd.variable)){
-        console.log("NEW VARIABLE",actualProd.variable,actualProd.result)
-        productionsDict[actualProd.variable.value] = [actualProd.result]
-        continue
+    function areProductionsEqual(lhs, rhs) {
+      if (lhs.variable.value != rhs.variable.value)
+        return false
+      for(const [l, r] of zip(lhs.result, rhs.result)) {
+        if (typeof l != typeof r)
+          return false
+        if (l.value != r.value)
+          return false
       }
-
-      if(!productionsDict[actualProd.variable].includes(actualProd.result)){
-        console.log("PUSHED VARIABLE",actualProd.variable,actualProd.result)
-        productionsDict[actualProd.variable.value].push(actualProd.result)
-        continue
-      }
-      logs.push(`REMOVED PRODUCTION ${actualProd.variable} -> ${actualProd.result.join()}`)
-      
-
+      return true
     }
 
-    let prods = []
-    console.log(productionsDict)
-    for (const [key,values] of Object.entries(productionsDict)){
-      for(const value of values){
-        prods.push(new Production(key,value))
+    let deduped = []
+    for (const actualProd of Array.from(this.productions)) {
+      let alreadyExisting = false
+      for (const uniqueProduction of Array.from(this.productions)) {
+        if (areProductionsEqual(actualProd, uniqueProduction)) {
+          alreadyExisting |= true
+          break
+        }
+      }
+      if (!alreadyExisting) {
+        deduped.push(actualProd)
       }
     }
 
-    this.productions = prods
+    for (const production of Array.from(this.productions)) {
+      this.removeProduction(production)
+    }
+    for (const uniqueProduction of deduped) {
+      this.addProduction(uniqueProduction)
+    }
 
     return [{
       what: 'DEDUPE_PRODUCTIONS',
