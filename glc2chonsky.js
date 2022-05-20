@@ -430,7 +430,6 @@ class GLC {
       }
       return true
     }
-
     let deduped = []
     for (const actualProd of Array.from(this.productions)) {
       let alreadyExisting = false
