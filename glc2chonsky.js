@@ -33,6 +33,14 @@ class Production {
     this.result = result
   }
 
+  resultString(){
+    let str =''
+    for(const value of this.result){
+      str += value.value
+    }
+    return `${this.variable.value} -> ${str}`
+  }
+
   hasEpsilon() {
     for (const partial of this.result) {
       if (partial instanceof Terminal && partial.value == EPSILON)
@@ -142,31 +150,33 @@ class GLC {
 
     // Chomsky step 1: Add new S0
     log.step1 = this.chomskyStep1()
-    console.log(log)
+    //console.log(log)
     // Chomsky step 2: Remove epsilons
     log.step2 = this.chomskyStep2()
-    console.log(log)
+    ////console.log(log)
     // Chomsky step 3: Remove transitivity
     log.step3 = this.chomskyStep3()
-    console.log(log)
+    //console.log(log)
     // Chomsky step 4: Remove things with length more than 4
     log.step4 = this.chomskyStep4()
-    console.log(log)
+    //console.log(log)
     // Chomsky step 5: Replace terminals with variables because yea
     log.step5 = this.chomskyStep5()
-    console.log(log)
+    //console.log(log)
     // Remove duplicated rules
     log.step5dedupe = this.dedupe()
-    console.log(log)
+    //console.log(log)
 
     return log
   }
 
   chomskyStep1() {
+    console.log("ADDING S0")
     let log = []
 
     const newProduction = new Production(S0, [this.s0])
     this.addProduction(newProduction)
+    console.log(`ADDED ${newProduction.resultString()}` )
     log.push({
       what: 'ADDED_S0_PRODUCTION',
       production: newProduction
@@ -182,6 +192,7 @@ class GLC {
     return log
   }
   chomskyStep2() {
+    console.log("S2 REMOVING EPSILON")
     let log = []
     // We first want to know the productions that have epsilon in its result
     let productionsWithEpsilon = this.getProductionsWithEpsilons()
@@ -189,12 +200,14 @@ class GLC {
     for (const production of productionsWithEpsilon) {
       // We remove the production with epsilon
       this.removeProduction(production)
+      console.log("REMOVED ",production.resultString())
 
       // Then we add the new production without the epsilon
       // only if it produces one or more values
       const productionWithoutEpsilon = production.removeEpsilons()
       if (productionWithoutEpsilon.result.length >= 1) {
         this.addProduction(productionWithoutEpsilon)
+        console.log("ADDED ",productionWithoutEpsilon.resultString())
       }
 
       // We want to propagate the changes to all the productions that depend
@@ -210,6 +223,7 @@ class GLC {
       // we first find all the productions that depend on the variable that we want to remove
       const dependentProductions = Array.from(this.dependencyMapping[production.variable.value])
       // then, for each dependency we want to add new productions without the variable mapping
+      console.log(dependentProductions)
       let newProductions = []
       for (const dependency of dependentProductions) {
 
@@ -225,7 +239,7 @@ class GLC {
         // then, we create the powerset without []
         let idxPowerset = powerset(indices)
 
-        console.log(idxPowerset)
+        
 
         
         // the powerset now contains the replacements that we are going to perform over the productions
@@ -239,19 +253,25 @@ class GLC {
             if (replaceIndices.includes(i)) {
               // if we find the variable, we replace it with the result of the production
               if (productionWithoutEpsilon.result.length > 0)
+               
                 result.push(...productionWithoutEpsilon.result)
             } else {
+              
               result.push(dependency.result[i])
             }
           }
           let newProduction = new Production(dependency.variable, result)
           if (newProduction.result.length >= 1)
             newProductions.push(newProduction)
+          else 
+            newProductions.push(new Production(dependency.variable, Variable(EPSILON)))
+            
         }
 
         // then, we add the productions to the GLC
         for (const production of newProductions) {
           this.addProduction(production)
+          console.log("ADDED ",production.resultString())
         }
 
         log.push({
@@ -266,6 +286,7 @@ class GLC {
     return log
   }
   chomskyStep3() {
+    console.log("S3 REMOVE TRANSITIVE")
     let log = []
     // Let's assume that
     // A -> B
@@ -312,19 +333,23 @@ class GLC {
       // To remove transitivity we remove the transitive rule
       // Then, we add the rules that are created by solving one iteration of the transitivity
       this.removeProduction(transitiveProduction)
+      console.log("REMOVED ",transitiveProduction.resultString())
+
       const transitiveResults = this.variableMapping[transitiveProduction.result[0].value]
       const newProductions = []
       for (const childProduction of transitiveResults) {
-        newProductions.push(
-          new Production(
+        
+        let prod = new Production(
           transitiveProduction.variable,
           childProduction.result
           )
-        )
+        
+        newProductions.push(prod)
       }
       console.log('S3 - Adding new productions: ', newProductions)
       for (const production of newProductions) {
         this.addProduction(production)
+        console.log("ADDED ",production.resultString())
       }
       log.push({
         what: 'REMOVED_TRANSITIVE_PRODUCTION',
@@ -337,6 +362,7 @@ class GLC {
     return log
   }
   chomskyStep4() {
+    console.log("REMOVING PRODS WITH LENGTH >2")
     let log = []
 
     let currentX = 1
@@ -344,6 +370,7 @@ class GLC {
       if (production.result.length <= 2)
         continue
       this.removeProduction(production)
+      console.log("REMOVED ",production.resultString())
       
       // then, we want to divide the production result into multiple productions
       // Y -> A1X1, X1 -> A2X2, X2 -> A3X3, ..., XN-2 -> A_N-1A_N
@@ -364,6 +391,7 @@ class GLC {
 
       for (const newProduction of newProductions) {
         this.addProduction(newProduction)
+        console.log("ADDED ",newProduction.resultString())
       }
 
       log.push({
@@ -377,6 +405,7 @@ class GLC {
     return log
   }
   chomskyStep5() {
+    console.log("REPLACE TERMINALS WITH VARIABLES")
     let log = []
 
     // we first want to identify the productions that have mixed variables with terminals
@@ -388,6 +417,7 @@ class GLC {
       if ((production.result.length < 2) || (!production.hasTerminals()))
         continue
       this.removeProduction(production)
+      console.log("REMOVED ",production.resultString())
       
       let newResult = []
       for (const partial of production.result) {
@@ -403,6 +433,7 @@ class GLC {
       }
       let newProduction = new Production(production.variable, newResult)
       this.addProduction(newProduction)
+      console.log("ADDED ",newProduction.resultString())
 
       log.push({
         what: 'REMOVED_MIXED_TERMINALS',
@@ -464,6 +495,11 @@ class GLC {
     
   }
 
+  prettyPrint() {
+    for (const v of Object.keys(this.variableMapping)) {
+      console.log(`${v}: `, this.variableMapping[v].map((v) => v.result.map(v=>v.value)))
+    }
+  }
 
   // Just gets one transitive rule, it is not important which one it is
   getTransitiveProduction() {
