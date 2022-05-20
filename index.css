@@ -120,6 +120,7 @@ body {
   margin-right: auto;
   margin-top: 0;
   max-width: 30em;
+  width: 30em;
   overflow: hidden;
 }
 
@@ -129,6 +130,7 @@ body {
   font-size: 1.5em;
   padding: 0.5em 0.75em;
   text-align: right;
+  width: 100%;
   max-width: 30em;
 }
 
@@ -155,14 +157,22 @@ body {
   color: #fff;
   font-size: 1.5em;
   padding: 0.5em 0.75em;
-  text-align: right;
-  max-width: 30em;
+  text-align: left;
+  max-width: 22em;
+  width: 100%;
+}
+
+.calculator__display1:empty:not(:focus):before {
+  color: #707070;
+  font-size: 1em;
+  font-style: italic;
+  content: attr(placeholder);
 }
 
 .calculator__display2 {
   background-color: #222222;
   color: #fff;
-  font-size: 1.0em;
+  font-size: 1em;
   padding: 0.5em 0.75em;
   text-align: left;
   max-width: 30em;
@@ -171,7 +181,7 @@ body {
 .calculator__display3 {
   background-color: #222222;
   color: #fff;
-  font-size: 1.0em;
+  font-size: 1em;
   padding: 0.5em 0.75em;
   text-align: left;
   max-width: 30em;
