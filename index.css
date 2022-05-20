@@ -227,8 +227,27 @@ body {
 
 .key--calculate {
   background-image: linear-gradient(to bottom, #fe886a, #ff7033);
-  grid-column: 0;
-  grid-row: 2 / span 4;
+  grid-column: -2;
+  grid-row: 2;
+  padding: 0.6em 1.7em;
+  font-weight: 500;
+  font-family: monospace;
+  border-radius: 0.12em;
+  box-sizing: border-box;
+}
+
+.rrb {
+  grid-column: 2;
+}
+
+.resetb {
+  grid-row: 2;
+  grid-column: 3;
+}
+
+.clearb {
+  grid-row: 1;
+  grid-column: -2;
 }
 
 .bn1 {

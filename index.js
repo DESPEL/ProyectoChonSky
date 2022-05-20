@@ -44,9 +44,10 @@ keys.addEventListener("click", (e) => {
     const action = key.dataset.action;
     const keyContent = key.textContent;
     const displayedEpsilon = epsilon.textContent;
-    const displayedVar = displayVar.textContent;
+    const displayedVar = displayVar.innerHTML;
     const displayedChar = display.textContent;
     const displayedArrow = arrow_display.textContent;
+    var previousDisplayedGLC = displayGLC.textContent;
     var displayedGLC = displayGLC.textContent;
     const previousKeyType = calculator.dataset.previousKeyType;
 
@@ -62,6 +63,7 @@ keys.addEventListener("click", (e) => {
 
     if (action == "add_rule") {
       if (displayedGLC === "") {
+        previousDisplayedGLC = "";
         displayGLC.textContent = displayedVar + displayedArrow + displayedChar;
         displayedGLC = displayGLC.textContent;
         glcVars.push(displayedVar);
@@ -77,7 +79,8 @@ keys.addEventListener("click", (e) => {
         }
       } else {
         let temp_array = [];
-        displayedGLC = displayGLC.textContent + "\r";
+        previousDisplayedGLC = displayGLC.textContent;
+        displayedGLC = displayGLC.textContent;
         displayGLC.textContent =
           displayedGLC + displayedVar + displayedArrow + displayedChar;
         if (!displayedGLC.includes("|")) {
@@ -97,13 +100,37 @@ keys.addEventListener("click", (e) => {
       displayVar.textContent = vars[var_index];
       display.textContent = "";
       var_index += 1;
+      console.log("var index", var_index);
       console.log("vars", glcVars);
       console.log("rules", glcTerms);
+      console.log("previousglc", previousDisplayedGLC);
     }
 
     if (action == "clear") {
-      location.reload(true);
+      display.textContent = "";
       console.log("clear");
+    }
+
+    if (action == "remove_rule") {
+      if (!(displayGLC.textContent === "")) {
+        var_index = var_index - 1;
+        if (var_index <= 0) {
+          displayVar.textContent = "S";
+          var_index = 0;
+        } else {
+          displayVar.textContent = vars[var_index - 1];
+        }
+      }
+      displayGLC.textContent = previousDisplayedGLC;
+      console.log("previousglc", previousDisplayedGLC);
+      console.log("var index", var_index);
+      //displayVar.textContent = vars[var_index - 1];
+      console.log("REMOVE RULE");
+    }
+
+    if (action == "reset") {
+      location.reload(true);
+      console.log("reset");
     }
 
     if (action == "calculate") {
