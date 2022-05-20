@@ -10,7 +10,7 @@ var var_index = 0;
 var displayedRules_index = 0;
 var glcVars = [];
 var glcTerms = [];
-var displayedRules = []
+var displayedRules = [];
 const vars = [
   "A",
   "B",
@@ -62,9 +62,10 @@ keys.addEventListener("click", (e) => {
 
     if (action == "add_rule") {
       if (displayedGLC === "") {
-        displayGLC.textContent = displayedVar + displayedArrow + displayedChar + "\n";
+        displayGLC.textContent =
+          displayedVar + displayedArrow + displayedChar + "\n";
         displayedGLC = displayGLC.textContent;
-        displayedRules.push(displayedGLC)
+        displayedRules.push(displayedGLC);
         glcVars.push(displayedVar);
         if (!displayedGLC.includes("|")) {
           glcTerms.push(displayedChar);
@@ -79,7 +80,7 @@ keys.addEventListener("click", (e) => {
       } else {
         let temp_array = [];
         displayGLC.textContent =
-        displayedGLC + displayedVar + displayedArrow + displayedChar + "\n";
+          displayedGLC + displayedVar + displayedArrow + displayedChar + "\n";
         displayedGLC = displayGLC.textContent;
         displayedRules.push(displayedGLC);
         if (!displayedGLC.includes("|")) {
@@ -121,8 +122,10 @@ keys.addEventListener("click", (e) => {
 
     if (action == "remove_rule") {
       if (!(displayGLC.textContent === "")) {
-        let dupcount = glcVars.filter(x=>x==glcVars[glcVars.length-1]).length;
-        while(dupcount>0) {
+        let dupcount = glcVars.filter(
+          (x) => x == glcVars[glcVars.length - 1]
+        ).length;
+        while (dupcount > 0) {
           glcVars.pop();
           glcTerms.pop();
           dupcount--;
@@ -139,7 +142,7 @@ keys.addEventListener("click", (e) => {
           displayGLC.textContent = "";
         } else {
           displayVar.textContent = vars[var_index - 1];
-          displayGLC.textContent = displayedRules[displayedRules_index-1];
+          displayGLC.textContent = displayedRules[displayedRules_index - 1];
         }
         displayedVar = displayVar.textContent;
       }
