@@ -193,7 +193,7 @@ class GLC {
       // Then we add the new production without the epsilon
       // only if it produces one or more values
       const productionWithoutEpsilon = production.removeEpsilons()
-      if (production.result.length >= 1) {
+      if (productionWithoutEpsilon.result.length >= 1) {
         this.addProduction(productionWithoutEpsilon)
       }
 
@@ -210,6 +210,7 @@ class GLC {
       // we first find all the productions that depend on the variable that we want to remove
       const dependentProductions = Array.from(this.dependencyMapping[production.variable.value])
       // then, for each dependency we want to add new productions without the variable mapping
+      let newProductions = []
       for (const dependency of dependentProductions) {
 
         // first find the indices of the variables to remove
@@ -229,7 +230,7 @@ class GLC {
         
         // the powerset now contains the replacements that we are going to perform over the productions
         // and the productionWithoutEpsilon.result contains the value to add
-        let newProductions = []
+
 
         for (const replaceIndices of idxPowerset) {
           let result = []
@@ -243,7 +244,9 @@ class GLC {
               result.push(dependency.result[i])
             }
           }
-          newProductions.push(new Production(dependency.variable, result))
+          let newProduction = new Production(dependency.variable, result)
+          if (newProduction.result.length >= 1)
+            newProductions.push(newProduction)
         }
 
         // then, we add the productions to the GLC
@@ -436,6 +439,7 @@ class GLC {
       let alreadyExisting = false
       for (const uniqueProduction of Array.from(deduped)) {
         if (areProductionsEqual(actualProd, uniqueProduction)) {
+          logs.push("REMOVED PRODUCtiON",actualProd)
           alreadyExisting |= true
           break
         }
