@@ -422,13 +422,14 @@ class GLC {
     let productionsDict = {}
     
     for (const actualProd of this.productions){
-      if(!Object.keys(productionsDict).includes(actualProd.variable)){
+      console.log("REAIDNG VAR",actualProd.variable)
+      if(!Object.keys(productionsDict).includes(actualProd.variable.value)){
         console.log("NEW VARIABLE",actualProd.variable,actualProd.result)
         productionsDict[actualProd.variable.value] = [actualProd.result]
         continue
       }
 
-      if(!productionsDict[actualProd.variable].includes(actualProd.result)){
+      if(!productionsDict[actualProd.variable.value].includes(actualProd.result)){
         console.log("PUSHED VARIABLE",actualProd.variable,actualProd.result)
         productionsDict[actualProd.variable.value].push(actualProd.result)
         continue
