@@ -6,6 +6,7 @@ const arrow_display = document.querySelector(".arrow__display");
 const displayGLC = document.querySelector(".calculator__display3");
 const pbr = document.createElement("br");
 const epsilon = document.querySelector(".bepsilon");
+const fncfield = document.getElementById('rules')
 var var_index = 0;
 var glcVars = [];
 var glcTerms = [];
@@ -110,6 +111,24 @@ keys.addEventListener("click", (e) => {
       console.log("Calculate ? idk");
       let glc = normalizeGLC(glcVars, glcTerms, "S");
       console.log(glc.chomsky());
+      let res = glc.prettyPrint()
+      html = ''
+      console.log(res)
+      for(const [key,value] of Object.entries(res)){
+        console.log(key)
+        if(key == glc.s0.value){
+          html = key +" $\\rightarrow$ " + value.join(" | ") + " <br> " + html
+          
+        }
+        else{
+        html += key +" $\\rightarrow$ " + value.join(" | ") + " <br> "
+        }
+        
+      }
+      console.log(html)
+      fncfield.innerHTML = html
+
+  
     }
   }
 });

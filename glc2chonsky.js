@@ -92,7 +92,7 @@ class Terminal {
   }
 }
 
-const S0 = new Variable("__VARIABLE_S0_FOR_CHOMSKY_OLA__")
+const S0 = new Variable("_S0_")
 class GLC {
   productions = []
   dependencyMapping = {}
@@ -502,9 +502,12 @@ class GLC {
   }
 
   prettyPrint() {
+    let res ={}
     for (const v of Object.keys(this.variableMapping)) {
-      console.log(`${v}: `, this.variableMapping[v].map((v) => v.result.map(v=>v.value)))
+      res[v]=this.variableMapping[v].map((v) => v.result.map(v=>v.value).join(""))
+      console.log(`${v}: `, this.variableMapping[v].map((v) => v.result.map(v=>v.value).join("")))
     }
+    return res
   }
 
   // Just gets one transitive rule, it is not important which one it is

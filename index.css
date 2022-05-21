@@ -187,6 +187,15 @@ body {
   max-width: 30em;
 }
 
+.FNC {
+  background-color: #222222;
+  color: #fff;
+  font-size: 1em;
+  padding: 0.5em 0.75em;
+  text-align: left;
+  max-width: 30em;
+}
+
 .parent_div {
   background-color: #222222;
   font-size: 0.714285714em;
