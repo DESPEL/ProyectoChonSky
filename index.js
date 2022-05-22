@@ -3,7 +3,7 @@ const keys = document.querySelector(".calculator__keys");
 const display = document.querySelector(".calculator__display1");
 const displayVar = document.querySelector(".variable__display");
 const arrow_display = document.querySelector(".arrow__display");
-const displayGLC = document.querySelector(".calculator__display3");
+const displayGLC = document.querySelector('.calculator__display3');
 const pbr = document.createElement("br");
 const epsilon = document.querySelector(".bepsilon");
 const fncfield = document.getElementById('rules')
@@ -63,8 +63,7 @@ keys.addEventListener("click", (e) => {
 
     if (action == "add_rule") {
       if (displayedGLC === "") {
-        displayGLC.textContent =
-          displayedVar + displayedArrow + displayedChar + "\n";
+        displayGLC.textContent = displayedVar + displayedArrow + displayedChar + "\n";
         displayedGLC = displayGLC.textContent;
         displayedRules.push(displayedGLC);
         glcVars.push(displayedVar);
@@ -103,17 +102,9 @@ keys.addEventListener("click", (e) => {
       display.textContent = "";
       var_index += 1;
       displayedRules_index += 1;
-      //let dupcount = glcVars.filter(x=>x==glcVars[glcVars.length-1]).length;
-      /*console.log("displayedRules: ", displayedRules);
-      console.log("rules index", displayedRules_index);
-      console.log("var index", var_index);
+      console.log("RULE ADDED");
       console.log("vars", glcVars);
       console.log("rules", glcTerms);
-      console.log("current glc:", displayGLC.textContent);
-      console.log("current displayed Var: ", displayedVar);
-      console.log("current var: ", glcVars[(glcVars.length)-1]);
-      console.log("last var count:", dupcount);
-      */
     }
 
     if (action == "clear") {
@@ -147,15 +138,9 @@ keys.addEventListener("click", (e) => {
         }
         displayedVar = displayVar.textContent;
       }
-      //console.log("displayedRules: ", displayedRules);
-      //console.log("var index", var_index);
-      //console.log("rules index", displayedRules_index);
-      //console.log("current glc", displayGLC.textContent);
-      //console.log("vars", glcVars);
-      //console.log("rules", glcTerms);
-      //console.log("last displayed Var: ", displayedVar);
-      //console.log("last var in glcVars: ", glcVars[(glcVars.length)-1]);
-      console.log("REMOVE RULE");
+      console.log("RULE REMOVED");
+      console.log("vars", glcVars);
+      console.log("rules", glcTerms);
     }
 
     if (action == "reset") {
@@ -173,11 +158,11 @@ keys.addEventListener("click", (e) => {
       for(const [key,value] of Object.entries(res)){
         console.log(key)
         if(key == glc.s0.value){
-          html = key +" $\\rightarrow$ " + value.join(" | ") + " <br> " + html
+          html = key + displayedArrow + value.join(" | ") + " <br> " + html
           
         }
         else{
-        html += key +" $\\rightarrow$ " + value.join(" | ") + " <br> "
+        html += key + displayedArrow + value.join(" | ") + " <br> "
         }
         
       }
