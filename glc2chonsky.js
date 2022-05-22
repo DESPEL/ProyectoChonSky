@@ -23,6 +23,7 @@
     }
   ]
 */
+let GLOBAL_LOG = {}
 const EPSILON = 'ε'
 
 class Production {
@@ -169,7 +170,14 @@ class GLC {
     log.step5dedupe = this.dedupe()
     //console.log(log)
 
+    GLOBAL_LOG = log
     return log
+  }
+
+  prettyPrint() {
+    for (const v of Object.keys(this.variableMapping)) {
+      console.log(`${v}: `, this.variableMapping[v].map((v) => v.result.map(v=>v.value)))
+    }
   }
 
   chomskyStep1() {
@@ -593,4 +601,3 @@ function normalizeGLC(glcVars, glcTerms, s0) {
   // Then, we create a GLC with the production list and s0
   return new GLC(productions, new Variable(s0))
 }
-
