@@ -1,7 +1,7 @@
 import { PushdownTransition } from "./PushdownTransition.js";
 import { GrammarFreeLanguage } from "./GLC.js";
 
-const EPSILON = "ϵ";
+const EPSILON = "ε";
 
 function uuidv4() {
 	return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, (c) =>
@@ -193,13 +193,37 @@ export class GLCToPushdownTransformation {
 
 		this.addStep({}, "Se termina la version sintetizada");
 
+		this.printDiagram('shortdiagram')
+
 		this.detailDiagram();
 
 		this.generateDotText();
 
-		//this.printDiagram();
+		this.printDiagram('finaldiagram');
+
+		this.detailSteps()
+
 		this.d3Diagram();
 	}
+
+	detailSteps() {
+
+		const containerDiv = document.querySelector('#list-steps');
+
+		let preparingText = "<h2>Step by Step</h2>\n"
+		preparingText += "<ol>\n"
+
+		for(let mod of this.modifications) {
+			preparingText += `<li>${mod.description}</li>\n`
+		}
+
+
+		preparingText += "</ol>\n"
+
+		containerDiv.innerHTML = preparingText
+
+	}
+
 
 	d3Diagram() {
 		var dotIndex = 0;
@@ -286,11 +310,11 @@ export class GLCToPushdownTransformation {
 
 	}
 
-	printDiagram() {
+	printDiagram(id = 'finaldiagram') {
 		new Viz()
 			.renderSVGElement(this.snapshots[this.snapshots.length - 1])
 			.then((elem) => {
-				document.body.appendChild(elem);
+				document.querySelector(`#${id}`).appendChild(elem);
 			});
 	}
 

@@ -40,6 +40,9 @@ const vars = [
   "Z",
 ];
 
+
+import {initPushdown} from './scripts/index.js'
+
 keys.addEventListener("click", (e) => {
   if (e.target.matches("button")) {
     //action
@@ -169,7 +172,10 @@ keys.addEventListener("click", (e) => {
       console.log(html)
       fncfield.innerHTML = html
     }
+
+    if (action == "pushdown") {
+      initPushdown(glcVars, glcTerms)
+    }
+
   }
 })
-
-import './scripts/index.js'

@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="index.css">
-  <title>Document</title>
+  <title>GLC to Pushdown Automata</title>
 </head>
 
 <body>
@@ -28,23 +28,31 @@
         <button class='bn1 clearb' data-action='clear'>Clear</button>
         <button class='bn1 rrb' data-action='remove_rule'>Remove rule</button>
         <button class='bn1 resetb' data-action='reset'>Reset</button>
-        <button class='key--calculate'
-          data-action='calculate'>Calculate</button>
-      </div>
+        <button class="key--calculate" data-action="pushdown">Pushdown</button>
 
-      <a href="./pushdown.html">To Pushdown transformation</a>
+
+      </div>
 
       <div class='calculator__display2'>Your Free Context Grammar will show
         here:</div>
       <div class='calculator__display3'></div>
-
-      <div id="chomsky" class="calculator_display2">
-        <p class='FNC'> Here is the normalized form of the Grammar:</p>
-        <div class='FNC' id="rules"></div>
-      </div>
     </div>
-
   </div>
+
+  <div style="display: flex; flex-wrap: wrap; flex-direction: row;">
+
+    <div style="width: 500px; height: 500px; background-color: white;">
+      <div id="graph" style="width: 100%; height: 100%"></div>
+    </div>
+    <div id="list-steps"></div>
+    <div style="width: 500px; height: 500px; background-color: white;">
+      <div id="shortdiagram" style="width: 100%; height: 100%"></div>
+    </div>
+    <div style="width: 500px; height: 500px; background-color: white;">
+      <div id="finaldiagram" style="width: 100%; height: 100%"></div>
+    </div>
+  </div>
+
   </div>
   <script src="https://d3js.org/d3.v5.min.js"></script>
   <script
@@ -60,7 +68,6 @@
   <script type="module" src="index.js" type="js"></script>
   <script src="utils.js"></script>
   <script src="glc2chonsky.js"></script>
-  <script src="index.js"></script>
 </body>
 
 </html>
