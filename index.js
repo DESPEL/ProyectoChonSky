@@ -121,8 +121,8 @@ class Variable {
     return this.value == cosa.value
   }
 }
-const epsilon = Variable("__EPSILON__SUPER__VALUE__IDK__")
-const s0 = Variable("__VARIABLE_S0_FOR_CHOMSKY_OLA__")
+const epsilon = new Variable("__EPSILON__SUPER__VALUE__IDK__")
+const s0 = new Variable("__VARIABLE_S0_FOR_CHOMSKY_OLA__")
 
 class Terminal {
   value
@@ -152,3 +152,5 @@ function convertToChomsky(glc) {
 function chomskyStep1() {
   
 }
+
+import './scripts/index.js'
