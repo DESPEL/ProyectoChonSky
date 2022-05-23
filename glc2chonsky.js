@@ -92,7 +92,7 @@ class Terminal {
   }
 }
 
-const S0 = new Variable("_S0_")
+const S0 = new Variable("S_0")
 class GLC {
   productions = []
   dependencyMapping = {}
@@ -173,12 +173,13 @@ class GLC {
   }
 
   chomskyStep1() {
-    console.log("ADDING S0")
+    
     let log = []
-
+    let stepsLog =[]
+    stepsLog.push("ADDING S0")
     const newProduction = new Production(S0, [this.s0])
     this.addProduction(newProduction)
-    console.log(`ADDED ${newProduction.resultString()}` )
+    stepsLog.push(`ADDED ${newProduction.resultString()}`)
     log.push({
       what: 'ADDED_S0_PRODUCTION',
       production: newProduction
@@ -191,26 +192,27 @@ class GLC {
     })
     this.s0 = S0
 
-    return log
+    return {log:log,steps:stepsLog}
   }
   chomskyStep2() {
-    console.log("S2 REMOVING EPSILON")
+    
     let log = []
+    let stepsLog =[]
     // We first want to know the productions that have epsilon in its result
     //let productionsWithEpsilon = this.getProductionsWithEpsilons()
-
+    stepsLog.push("S2 REMOVING EPSILON")
     while (this.hasEpsilonProductions()) {
       const production = this.getEpsilonNotS0()
       // We remove the production with epsilon
       this.removeProduction(production)
-      console.log("REMOVED ",production.resultString())
+      stepsLog.push("REMOVED "+ production.resultString())
 
       // Then we add the new production without the epsilon
       // only if it produces one or more values
       const productionWithoutEpsilon = production.removeEpsilons()
       if (productionWithoutEpsilon.result.length >= 1) {
         this.addProduction(productionWithoutEpsilon)
-        console.log("ADDED ",productionWithoutEpsilon.resultString())
+        stepsLog.push("ADDED "+productionWithoutEpsilon.resultString())
       }
 
       // We want to propagate the changes to all the productions that depend
@@ -274,7 +276,8 @@ class GLC {
         // then, we add the productions to the GLC
         for (const production of newProductions) {
           this.addProduction(production)
-          console.log("ADDED ",production.resultString())
+          if(!stepsLog.includes("ADDED " + production.resultString()))
+            stepsLog.push("ADDED " + production.resultString())
         }
 
         log.push({
@@ -282,15 +285,18 @@ class GLC {
           production: production,
           dependents: dependentProductions,
           newProductions: newProductions,
-          newState: this.duplicateGLC()
+          newState: this.duplicateGLC(),
+          
         })
       }
     }
-    return log
+    return {log:log, steps:stepsLog}
   }
   chomskyStep3() {
     console.log("S3 REMOVE TRANSITIVE")
     let log = []
+    let stepsLog = []
+    stepsLog.push("S3 REMOVE TRANSITIVE")
     // Let's assume that
     // A -> B
     // B -> C | D
@@ -336,7 +342,7 @@ class GLC {
       // To remove transitivity we remove the transitive rule
       // Then, we add the rules that are created by solving one iteration of the transitivity
       this.removeProduction(transitiveProduction)
-      console.log("REMOVED ",transitiveProduction.resultString())
+      stepsLog.push("REMOVED " + transitiveProduction.resultString())
       if (transitiveProduction.variable.value === transitiveProduction.result[0].value) {
         continue
       }
@@ -355,7 +361,8 @@ class GLC {
       console.log('S3 - Adding new productions: ', newProductions)
       for (const production of newProductions) {
         this.addProduction(production)
-        console.log("ADDED ",production.resultString())
+        if(!stepsLog.includes("ADDED "+production.resultString()))
+        stepsLog.push("ADDED "+production.resultString())
       }
       log.push({
         what: 'REMOVED_TRANSITIVE_PRODUCTION',
@@ -365,18 +372,19 @@ class GLC {
         newState: this.duplicateGLC()
       })
     }
-    return log
+    return {log:log,steps:stepsLog}
   }
   chomskyStep4() {
     console.log("REMOVING PRODS WITH LENGTH >2")
     let log = []
-
+    let stepsLog=[]
+    stepsLog.push("S4 REMOVE PRODS WITH LENGHT >2")
     let currentX = 1
     for (const production of Array.from(this.productions)) {
       if (production.result.length <= 2)
         continue
       this.removeProduction(production)
-      console.log("REMOVED ",production.resultString())
+      stepsLog.push("REMOVED "+production.resultString())
       
       // then, we want to divide the production result into multiple productions
       // Y -> A1X1, X1 -> A2X2, X2 -> A3X3, ..., XN-2 -> A_N-1A_N
@@ -397,7 +405,8 @@ class GLC {
 
       for (const newProduction of newProductions) {
         this.addProduction(newProduction)
-        console.log("ADDED ",newProduction.resultString())
+        if(!stepsLog.includes("ADDED "+newProduction.resultString()))
+          stepsLog.push("ADDED "+newProduction.resultString())
       }
 
       log.push({
@@ -408,11 +417,12 @@ class GLC {
       })
     }
 
-    return log
+    return {log:log, steps:stepsLog}
   }
   chomskyStep5() {
     console.log("REPLACE TERMINALS WITH VARIABLES")
     let log = []
+    let stepsLog=[]
 
     // we first want to identify the productions that have mixed variables with terminals
     let currentZ = 1
@@ -423,7 +433,7 @@ class GLC {
       if ((production.result.length < 2) || (!production.hasTerminals()))
         continue
       this.removeProduction(production)
-      console.log("REMOVED ",production.resultString())
+      stepsLog.push("REMOVED "+production.resultString())
       
       let newResult = []
       for (const partial of production.result) {
@@ -439,7 +449,8 @@ class GLC {
       }
       let newProduction = new Production(production.variable, newResult)
       this.addProduction(newProduction)
-      console.log("ADDED ",newProduction.resultString())
+      if(stepsLog.includes("ADDED "+newProduction.resultString()))
+        stepsLog.push("ADDED "+newProduction.resultString())
 
       log.push({
         what: 'REMOVED_MIXED_TERMINALS',
@@ -453,7 +464,7 @@ class GLC {
       this.addProduction(newProduction)
     }
 
-    return log
+    return {log:log, steps:stepsLog}
   }
   dedupe() {
     let logs = []

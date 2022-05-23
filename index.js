@@ -7,6 +7,13 @@ const displayGLC = document.querySelector(".calculator__display3");
 const pbr = document.createElement("br");
 const epsilon = document.querySelector(".bepsilon");
 const fncfield = document.getElementById('rules')
+
+
+MathJax ={
+  options:{
+    processHtmlClass :'FNC'
+  }
+}
 var var_index = 0;
 var glcVars = [];
 var glcTerms = [];
@@ -110,23 +117,37 @@ keys.addEventListener("click", (e) => {
     if (action == "calculate") {
       console.log("Calculate ? idk");
       let glc = normalizeGLC(glcVars, glcTerms, "S");
-      console.log(glc.chomsky());
+      let resu = glc.chomsky()
+      for (const i of Object.values( resu)){
+        if(!i.steps){
+          continue
+        }
+        for(const action of i.steps){
+          console.log(action)
+        }
+      }
       let res = glc.prettyPrint()
-      html = ''
+      let html = ''
       console.log(res)
       for(const [key,value] of Object.entries(res)){
         console.log(key)
         if(key == glc.s0.value){
-          html = key +" $\\rightarrow$ " + value.join(" | ") + " <br> " + html
+          html = "$$ " + key +" \\rightarrow " + value.join(" | ") + "$$ <br> " + html
           
         }
         else{
-        html += key +" $\\rightarrow$ " + value.join(" | ") + " <br> "
+        html += "$$ " + key +"\\rightarrow " + value.join(" | ") + "$$ <br> "
         }
         
       }
+      
       console.log(html)
       fncfield.innerHTML = html
+      
+      MathJax.Hub.Queue(["Typeset",MathJax.Hub])
+      console.log(MathJax.Hub) 
+
+      
 
   
     }

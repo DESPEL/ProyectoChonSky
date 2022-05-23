@@ -6,13 +6,18 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="index.css">
-  <title>Document</title>
+  <title> Teoria de Automatas</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script type="text/javascript"
+    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    
+    </script>
 </head>
 
 <body>
   <div class='container'>
     <script type="text/javascript"
-    src="https://www.maths.nottingham.ac.uk/plp/pmadw/LaTeXMathML.js">
+    src="LaTeXMathML.js">
     </script>
     <div class='fcgcalculator'>
       <div class='parent_div'>
@@ -32,13 +37,14 @@
       <p class='calculator__display3'></p>
     </div>
 
-    <div id="chomsky" class="calculator_display2"> 
+    <div id="chomsky" class="calculator__display2"> 
 
-      <p class='FNC'> Here is the normalized form of the Grammar</p>
-      <p  class ='FNC' id="rules"></p>
+      <p class=''> Here is the normalized form of the Grammar</p>
+      <p class ='FNC' id="rules"></p>
     </div>
   </div>
   </div>
+  
   <script src="utils.js"></script>
   <script src="glc2chonsky.js"></script>
   <script src="index.js"></script>
