@@ -4,7 +4,6 @@ const display = document.querySelector(".calculator__display1");
 const displayVar = document.querySelector(".variable__display");
 const arrow_display = document.querySelector(".arrow__display");
 const displayGLC = document.querySelector('.calculator__display3');
-const pbr = document.createElement("br");
 const epsilon = document.querySelector(".bepsilon");
 const fncfield = document.getElementById('rules')
 var var_index = 0;
@@ -40,8 +39,8 @@ const vars = [
   "Z",
 ];
 
-
 import {initPushdown} from './scripts/index.js'
+document.getElementById("PD_display").style.display='none';
 
 keys.addEventListener("click", (e) => {
   if (e.target.matches("button")) {
@@ -156,7 +155,7 @@ keys.addEventListener("click", (e) => {
       let glc = normalizeGLC(glcVars, glcTerms, "S");
       console.log(glc.chomsky());
       let res = glc.prettyPrint()
-      html = ''
+      let html = ''
       console.log(res)
       for(const [key,value] of Object.entries(res)){
         console.log(key)
@@ -173,7 +172,8 @@ keys.addEventListener("click", (e) => {
       fncfield.innerHTML = html
     }
 
-    if (action == "pushdown") {
+    if (action == "calculate_pushdown") {
+      document.getElementById("PD_display").style.display='';
       initPushdown(glcVars, glcTerms)
     }
 
