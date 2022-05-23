@@ -41,6 +41,8 @@ const vars = [
 
 import {initPushdown} from './scripts/index.js'
 document.getElementById("PD_display").style.display='none';
+document.getElementById("graph").style.display='none';
+document.getElementById("FNC_title").style.display='none';
 
 keys.addEventListener("click", (e) => {
   if (e.target.matches("button")) {
@@ -151,6 +153,7 @@ keys.addEventListener("click", (e) => {
     }
 
     if (action == "calculate") {
+      document.getElementById("FNC_title").style.display='';
       console.log("Calculate ? idk");
       let glc = normalizeGLC(glcVars, glcTerms, "S");
       console.log(glc.chomsky());
@@ -173,6 +176,7 @@ keys.addEventListener("click", (e) => {
     }
 
     if (action == "calculate_pushdown") {
+      document.getElementById("graph").style.display='';
       document.getElementById("PD_display").style.display='';
       initPushdown(glcVars, glcTerms)
     }
