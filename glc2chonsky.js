@@ -176,10 +176,10 @@ class GLC {
     
     let log = []
     let stepsLog =[]
-    stepsLog.push("ADDING S0")
+    stepsLog.push("Paso 1: Añadir $S_0$")
     const newProduction = new Production(S0, [this.s0])
     this.addProduction(newProduction)
-    stepsLog.push(`ADDED ${newProduction.resultString()}`)
+    stepsLog.push(`Añadimos $ ${newProduction.resultString()} $`)
     log.push({
       what: 'ADDED_S0_PRODUCTION',
       production: newProduction
@@ -188,7 +188,8 @@ class GLC {
     log.push({
       what: 'REPLACED_OLD_S0',
       oldValue: this.s0,
-      newValue: S0
+      newValue: S0,
+      newState:this.duplicateGLC()
     })
     this.s0 = S0
 
@@ -200,19 +201,19 @@ class GLC {
     let stepsLog =[]
     // We first want to know the productions that have epsilon in its result
     //let productionsWithEpsilon = this.getProductionsWithEpsilons()
-    stepsLog.push("S2 REMOVING EPSILON")
+    stepsLog.push("Paso 2: Remover Epsilon")
     while (this.hasEpsilonProductions()) {
       const production = this.getEpsilonNotS0()
       // We remove the production with epsilon
       this.removeProduction(production)
-      stepsLog.push("REMOVED "+ production.resultString())
+      stepsLog.push("Eliminamos $"+ production.resultString()+"$")
 
       // Then we add the new production without the epsilon
       // only if it produces one or more values
       const productionWithoutEpsilon = production.removeEpsilons()
       if (productionWithoutEpsilon.result.length >= 1) {
         this.addProduction(productionWithoutEpsilon)
-        stepsLog.push("ADDED "+productionWithoutEpsilon.resultString())
+        stepsLog.push("Añadimos $"+productionWithoutEpsilon.resultString()+"$")
       }
 
       // We want to propagate the changes to all the productions that depend
@@ -276,8 +277,8 @@ class GLC {
         // then, we add the productions to the GLC
         for (const production of newProductions) {
           this.addProduction(production)
-          if(!stepsLog.includes("ADDED " + production.resultString()))
-            stepsLog.push("ADDED " + production.resultString())
+          if(!stepsLog.includes("Añadimos $" + production.resultString()+"$"))
+            stepsLog.push("Añadimos $" + production.resultString()+"$")
         }
 
         log.push({
@@ -296,7 +297,8 @@ class GLC {
     console.log("S3 REMOVE TRANSITIVE")
     let log = []
     let stepsLog = []
-    stepsLog.push("S3 REMOVE TRANSITIVE")
+  
+    stepsLog.push("Paso 3 eliminamos variables redundantes de tamaño 1 y la remplazamos por sus producciones")
     // Let's assume that
     // A -> B
     // B -> C | D
@@ -342,7 +344,7 @@ class GLC {
       // To remove transitivity we remove the transitive rule
       // Then, we add the rules that are created by solving one iteration of the transitivity
       this.removeProduction(transitiveProduction)
-      stepsLog.push("REMOVED " + transitiveProduction.resultString())
+      stepsLog.push("Eliminamos $"+ transitiveProduction.resultString()+"$")
       if (transitiveProduction.variable.value === transitiveProduction.result[0].value) {
         continue
       }
@@ -361,9 +363,10 @@ class GLC {
       console.log('S3 - Adding new productions: ', newProductions)
       for (const production of newProductions) {
         this.addProduction(production)
-        if(!stepsLog.includes("ADDED "+production.resultString()))
-        stepsLog.push("ADDED "+production.resultString())
+        if(!stepsLog.includes("Añadimos $"+production.resultString()+"$"))
+        stepsLog.push("Añadimos $"+production.resultString()+"$")
       }
+      
       log.push({
         what: 'REMOVED_TRANSITIVE_PRODUCTION',
         production: transitiveProduction,
@@ -372,19 +375,20 @@ class GLC {
         newState: this.duplicateGLC()
       })
     }
+    
     return {log:log,steps:stepsLog}
   }
   chomskyStep4() {
-    console.log("REMOVING PRODS WITH LENGTH >2")
+    
     let log = []
     let stepsLog=[]
-    stepsLog.push("S4 REMOVE PRODS WITH LENGHT >2")
+    stepsLog.push("Paso 4 :Eliminamos producciones con tamaño mayor a 2")
     let currentX = 1
     for (const production of Array.from(this.productions)) {
       if (production.result.length <= 2)
         continue
       this.removeProduction(production)
-      stepsLog.push("REMOVED "+production.resultString())
+      stepsLog.push("Eliminamos $"+ production.resultString()+"$")
       
       // then, we want to divide the production result into multiple productions
       // Y -> A1X1, X1 -> A2X2, X2 -> A3X3, ..., XN-2 -> A_N-1A_N
@@ -405,8 +409,11 @@ class GLC {
 
       for (const newProduction of newProductions) {
         this.addProduction(newProduction)
-        if(!stepsLog.includes("ADDED "+newProduction.resultString()))
-          stepsLog.push("ADDED "+newProduction.resultString())
+        if(!stepsLog.includes("Añadimos $"+newProduction.resultString()+"$")){
+          console.log("ADDED PROD")
+          stepsLog.push("Añadimos $"+newProduction.resultString()+"$")
+        }
+
       }
 
       log.push({
@@ -424,6 +431,7 @@ class GLC {
     let log = []
     let stepsLog=[]
 
+    stepsLog.push("Paso 5: Reemplazamos variables con terminales")
     // we first want to identify the productions that have mixed variables with terminals
     let currentZ = 1
     let terminalMapping = {}
@@ -433,13 +441,20 @@ class GLC {
       if ((production.result.length < 2) || (!production.hasTerminals()))
         continue
       this.removeProduction(production)
-      stepsLog.push("REMOVED "+production.resultString())
+      stepsLog.push("Eliminamos $"+ production.resultString()+"$")
       
       let newResult = []
       for (const partial of production.result) {
         if (partial instanceof Terminal) {
           if (!Object.keys(terminalMapping).includes(partial.value)) {
             terminalMapping[partial.value] = new Variable(`Z_${currentZ}`)
+            let production = new Production(
+              terminalMapping[partial.value],
+              [new Terminal(partial.value)]
+            )
+            this.addProduction(production)
+            if(!stepsLog.includes("Añadimos $"+production.resultString()+"$"))
+                stepsLog.push("Añadimos $"+production.resultString()+"$")
             currentZ++
           }
           newResult.push(terminalMapping[partial.value])
@@ -449,8 +464,8 @@ class GLC {
       }
       let newProduction = new Production(production.variable, newResult)
       this.addProduction(newProduction)
-      if(stepsLog.includes("ADDED "+newProduction.resultString()))
-        stepsLog.push("ADDED "+newProduction.resultString())
+      if(!stepsLog.includes("Añadimos $"+newProduction.resultString()+"$"))
+        stepsLog.push("Añadimos $"+newProduction.resultString()+"$")
 
       log.push({
         what: 'REMOVED_MIXED_TERMINALS',
@@ -459,10 +474,10 @@ class GLC {
         newState: this.duplicateGLC()
       })
     }
-    for (const terminal of Object.keys(terminalMapping)) {
-      let newProduction = new Production(terminalMapping[terminal], [new Terminal(terminal)])
-      this.addProduction(newProduction)
-    }
+    // for (const terminal of Object.keys(terminalMapping)) {
+    //   let newProduction = new Production(terminalMapping[terminal], [new Terminal(terminal)])
+    //   this.addProduction(newProduction)
+    // }
 
     return {log:log, steps:stepsLog}
   }

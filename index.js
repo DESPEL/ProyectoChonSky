@@ -9,11 +9,9 @@ const epsilon = document.querySelector(".bepsilon");
 const fncfield = document.getElementById('rules')
 
 
-MathJax ={
-  options:{
-    processHtmlClass :'FNC'
-  }
-}
+
+let glcres
+
 var var_index = 0;
 var glcVars = [];
 var glcTerms = [];
@@ -71,7 +69,9 @@ keys.addEventListener("click", (e) => {
     if (action == "add_rule") {
       if (displayedGLC === "") {
         displayGLC.textContent = displayedVar + displayedArrow + displayedChar;
+
         displayedGLC = displayGLC.textContent;
+
         glcVars.push(displayedVar);
         if (!displayedGLC.includes("|")) {
           glcTerms.push(displayedChar);
@@ -118,38 +118,156 @@ keys.addEventListener("click", (e) => {
       console.log("Calculate ? idk");
       let glc = normalizeGLC(glcVars, glcTerms, "S");
       let resu = glc.chomsky()
-      for (const i of Object.values( resu)){
-        if(!i.steps){
-          continue
-        }
-        for(const action of i.steps){
-          console.log(action)
-        }
-      }
+
       let res = glc.prettyPrint()
       let html = ''
       console.log(res)
-      for(const [key,value] of Object.entries(res)){
+      for (const [key, value] of Object.entries(res)) {
         console.log(key)
-        if(key == glc.s0.value){
-          html = "$$ " + key +" \\rightarrow " + value.join(" | ") + "$$ <br> " + html
-          
+        if (key == glc.s0.value) {
+          html = "$ " + key + " \\rightarrow " + value.join(" | ") + "$ <br> " + html
+
         }
-        else{
-        html += "$$ " + key +"\\rightarrow " + value.join(" | ") + "$$ <br> "
+        else {
+          html += "$ " + key + "\\rightarrow " + value.join(" | ") + "$ <br> "
         }
-        
+
       }
-      
+      showSteps(resu)
+      glcres = resu
       console.log(html)
       fncfield.innerHTML = html
-      
-      MathJax.Hub.Queue(["Typeset",MathJax.Hub])
-      console.log(MathJax.Hub) 
 
-      
+      render()
 
-  
+
+
+
     }
   }
 });
+
+const processField = document.getElementById("process")
+let processStep = 0
+let processKeys = ["step1", "step2", "step3", "step4", "step5"]
+function showSteps(results) {
+  console.log("RESULTS", results)
+  listedActions = ''
+  let actualStep = 0
+  let state
+  let prevState
+  let prevs = false
+
+
+  const stepLog = results[processKeys[processStep]]
+  console.log(stepLog)
+  if (stepLog.log.length > 0) {
+    state = stepLog.log[stepLog.log.length - 1].newState
+  } else {
+    prevs = true
+  }
+
+  for (const action of stepLog.steps) {
+    listedActions += action + "<br> "
+  }
+
+
+
+  if (processStep == 2) {
+    console.log("****2", results)
+    state = results['step3dedupe'][0]['newState']
+  }
+  if (processStep == 4) {
+    console.log("****4")
+    state = results['step5dedupe'][0]['newState']
+  }
+  console.log(state)
+  let html = ''
+
+  if (prevs) {
+    state = getPrevState(processStep - 1, results)
+  }
+  console.log("------------------", prevState, state, actualStep, processStep)
+  for (const [key, value] of Object.entries(state.prettyPrint())) {
+    if (key == state.s0.value) {
+      html = "$ " + key + " \\rightarrow " + value.join(" | ") + "$ <br> " + html
+
+    }
+    else {
+      html += "$ " + key + "\\rightarrow " + value.join(" | ") + "$ <br> "
+    }
+
+  }
+
+  if (prevs) html = "There is no need to do this step <br> " + html
+
+
+  processField.innerHTML = listedActions + "END STATE <br> " + html
+
+
+
+  render()
+}
+
+function render() {
+  AMtranslated = false
+  translate()
+}
+
+function nextStep() {
+  processStep += 1
+  console.log(glcres, processStep)
+  showSteps(glcres)
+}
+function previousStep() {
+  processStep -= 1
+  showSteps(glcres)
+}
+
+function getPrevState(step, results) {
+
+
+  let actualStep = 0
+  let state
+  let prevs = false
+
+  for (const i of Object.values(results)) {
+
+    if (actualStep > step) break
+    if (actualStep != step) {
+      actualStep += 1
+      continue
+    }
+
+
+    if (!i.steps) {
+
+      continue
+    }
+    if (i.log.length == 0) {
+      prevs = true
+    }
+    else {
+      state = i.log[i.log.length - 1].newState
+    }
+    if (actualStep == step) {
+      actualStep += 1
+    }
+
+    if (step == 2) {
+
+      state = results['step3dedupe'][0]['newState']
+    }
+    if (step == 4) {
+
+      state = results['step5dedupe'][0]['newState']
+    }
+
+    if (prevs) return getPrevState(step - 1, results)
+    return state
+
+
+  }
+
+
+}
