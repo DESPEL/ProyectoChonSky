@@ -219,7 +219,7 @@ class GLC {
       // Then we add the new production without the epsilon
       // only if it produces one or more values
       const productionWithoutEpsilon = production.removeEpsilons()
-      console.log("WE", productionWithoutEpsilon)
+      //console.log("WE", productionWithoutEpsilon)
       if (productionWithoutEpsilon.result.length >= 1) {
         this.addProduction(productionWithoutEpsilon)
         stepsLog.push("Añadimos $"+productionWithoutEpsilon.resultString()+"$")
@@ -246,12 +246,12 @@ class GLC {
         let indices = []
         for (let i = 0; i < dependency.result.length; i++) {
           const partial = dependency.result[i]
-          console.log("COMPARISON", partial.value,' - ',production.variable.value)
+          //console.log("COMPARISON", partial.value,' - ',production.variable.value, partial.value==production.variable.value)
           if (partial.value == production.variable.value)
             indices.push(i)
         }
 
-        
+        //console.log("Indices",indices)
         // then, we create the powerset without []
         let idxPowerset = powerset(indices)
 
@@ -261,27 +261,52 @@ class GLC {
         // the powerset now contains the replacements that we are going to perform over the productions
         // and the productionWithoutEpsilon.result contains the value to add
 
-        console.log("powerset",idxPowerset)
+        //console.log("powerset",idxPowerset)
         for (const replaceIndices of idxPowerset) {
           let result = []
-          console.log("Indices a eliminar",replaceIndices)
+          //console.log("Indices a eliminar",replaceIndices)
           for (let i = 0; i < dependency.result.length; i++) {
             if (replaceIndices.includes(i)) {
               // if we find the variable, we replace it with the result of the production
               if (productionWithoutEpsilon.result.length > 0)
                
-                result.push(...productionWithoutEpsilon.result)
+              result.push(...productionWithoutEpsilon.result)
             } else {
               
               result.push(dependency.result[i])
             }
           }
-          console.log(result)
+          //console.log(result)
           let newProduction = new Production(dependency.variable, result)
-          if (newProduction.result.length >= 1)
-            newProductions.push(newProduction)
-          else 
-            newProductions.push(new Production(dependency.variable, [new Terminal(EPSILON)]))
+          let localProductions = Array.from(this.variableMapping[newProduction.variable.value].map(x=>x.resultString()))
+          console.log("BEFORE ADDING PRODUCTION",localProductions)
+          // newProductions.forEach(production=> { //console.log("ADDING PRODUCTION") 
+          // localProductions.push(production.resultString())}
+          // )
+          console.log("AFTER ADDING PRODUCTIONS",localProductions)
+          console.log("CONTINUE")
+          if (newProduction.result.length >= 1){
+            if(!(newProduction.result.length==1 && newProduction.variable.value==newProduction.result[0].value)){
+              console.log(localProductions,localProductions.includes(newProduction.resultString()))
+              if(localProductions.includes(newProduction.resultString())){
+                //console.log("SE INCLUYE LA PRODUCCION")
+              }
+              else{
+                console.log("ADDING PRODUCTION", newProduction.resultString())
+                console.log("BECASUSE IS NOT IN", localProductions)
+                newProductions.push(newProduction)
+              }
+            }
+          }
+          else{ 
+            newProduction= new Production(dependency.variable, [new Terminal(EPSILON)])
+            if(localProductions.includes(newProduction.resultString())){
+            }
+            else{
+              if(production.variable.value!=newProduction.variable.value)
+                newProductions.push(newProduction)
+            }
+          }
             
         }
 
@@ -291,13 +316,15 @@ class GLC {
           if(!stepsLog.includes("Añadimos $" + production.resultString()+"$"))
             stepsLog.push("Añadimos $" + production.resultString()+"$")
         }
+        
+        let dedupeLog = this.dedupe()[0].newState
 
         log.push({
           what: 'REMOVED_EPSILON_PRODUCTION',
           production: production,
           dependents: dependentProductions,
           newProductions: newProductions,
-          newState: this.duplicateGLC(),
+          newState: dedupeLog.duplicateGLC(),
           
         })
       }
