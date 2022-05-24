@@ -210,11 +210,11 @@ export class GLCToPushdownTransformation {
 
 		const containerDiv = document.querySelector('#list-steps');
 
-		let preparingText = "<h2>Step by Step</h2>\n"
-		preparingText += "<ol>\n"
+		let preparingText = ""
+		preparingText += "<ol style=\"text-align:left;  list-style-type: decimal; list-style-position: inside;\">\n"
 
 		for(let mod of this.modifications) {
-			preparingText += `<li>${mod.description}</li>\n`
+			preparingText += `<li>${mod.description}</li><br/>\n`
 		}
 
 
@@ -496,7 +496,7 @@ export class GLCToPushdownTransformation {
 
 			this.addStep(
 				{ add: { states: newStates, transitions: rulesInStep } },
-				`Se parte la regla, epsilon, ${ruleToBreak.pop} -> ${ruleToBreak.push}`
+				`Se parte la regla, ${ruleToBreak.read}, ${ruleToBreak.pop} -> ${ruleToBreak.push}`
 			);
 
 			this.generateDotText();
