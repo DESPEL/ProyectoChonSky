@@ -13,8 +13,10 @@ const fncfield = document.getElementById('rules')
 let glcres
 
 var var_index = 0;
+var displayedRules_index = 0;
 var glcVars = [];
 var glcTerms = [];
+var displayedRules = [];
 const vars = [
   "A",
   "B",
@@ -50,13 +52,11 @@ keys.addEventListener("click", (e) => {
     const action = key.dataset.action;
     const keyContent = key.textContent;
     const displayedEpsilon = epsilon.textContent;
-    const displayedVar = displayVar.textContent;
+    var displayedVar = displayVar.textContent;
     const displayedChar = display.textContent;
     const displayedArrow = arrow_display.textContent;
     var displayedGLC = displayGLC.textContent;
     const previousKeyType = calculator.dataset.previousKeyType;
-
-    var usedVars = [];
 
     if (!action) {
       if (displayedChar === "") {
@@ -68,10 +68,10 @@ keys.addEventListener("click", (e) => {
 
     if (action == "add_rule") {
       if (displayedGLC === "") {
-        displayGLC.textContent = displayedVar + displayedArrow + displayedChar;
-
+        displayGLC.textContent =
+          displayedVar + displayedArrow + displayedChar + "\n";
         displayedGLC = displayGLC.textContent;
-
+        displayedRules.push(displayedGLC);
         glcVars.push(displayedVar);
         if (!displayedGLC.includes("|")) {
           glcTerms.push(displayedChar);
@@ -85,9 +85,10 @@ keys.addEventListener("click", (e) => {
         }
       } else {
         let temp_array = [];
-        displayedGLC = displayGLC.textContent + "\r";
         displayGLC.textContent =
-          displayedGLC + displayedVar + displayedArrow + displayedChar;
+          displayedGLC + displayedVar + displayedArrow + displayedChar + "\n";
+        displayedGLC = displayGLC.textContent;
+        displayedRules.push(displayedGLC);
         if (!displayedGLC.includes("|")) {
           glcVars.push(displayedVar);
           glcTerms.push(displayedChar);
@@ -103,15 +104,68 @@ keys.addEventListener("click", (e) => {
         }
       }
       displayVar.textContent = vars[var_index];
+      displayedVar = displayVar.textContent;
       display.textContent = "";
       var_index += 1;
+      displayedRules_index += 1;
+      //let dupcount = glcVars.filter(x=>x==glcVars[glcVars.length-1]).length;
+      /*console.log("displayedRules: ", displayedRules);
+      console.log("rules index", displayedRules_index);
+      console.log("var index", var_index);
       console.log("vars", glcVars);
       console.log("rules", glcTerms);
+      console.log("current glc:", displayGLC.textContent);
+      console.log("current displayed Var: ", displayedVar);
+      console.log("current var: ", glcVars[(glcVars.length)-1]);
+      console.log("last var count:", dupcount);
+      */
     }
 
     if (action == "clear") {
-      location.reload(true);
+      display.textContent = "";
       console.log("clear");
+    }
+
+    if (action == "remove_rule") {
+      if (!(displayGLC.textContent === "")) {
+        let dupcount = glcVars.filter(
+          (x) => x == glcVars[glcVars.length - 1]
+        ).length;
+        while (dupcount > 0) {
+          glcVars.pop();
+          glcTerms.pop();
+          dupcount--;
+        }
+        var_index = var_index - 1;
+        console.log(vars[var_index]);
+        console.log(glcVars[var_index]);
+        displayedRules_index -= 1;
+        displayedRules.pop();
+        if (var_index <= 0) {
+          displayVar.textContent = "S";
+          var_index = 0;
+          displayedRules_index = 0;
+          displayGLC.textContent = "";
+        } else {
+          displayVar.textContent = vars[var_index - 1];
+          displayGLC.textContent = displayedRules[displayedRules_index - 1];
+        }
+        displayedVar = displayVar.textContent;
+      }
+      //console.log("displayedRules: ", displayedRules);
+      //console.log("var index", var_index);
+      //console.log("rules index", displayedRules_index);
+      //console.log("current glc", displayGLC.textContent);
+      //console.log("vars", glcVars);
+      //console.log("rules", glcTerms);
+      //console.log("last displayed Var: ", displayedVar);
+      //console.log("last var in glcVars: ", glcVars[(glcVars.length)-1]);
+      console.log("REMOVE RULE");
+    }
+
+    if (action == "reset") {
+      location.reload(true);
+      console.log("reset");
     }
 
     if (action == "calculate") {
