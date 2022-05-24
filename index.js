@@ -56,9 +56,9 @@ keys.addEventListener("click", (e) => {
     const action = key.dataset.action;
     const keyContent = key.textContent;
     const displayedEpsilon = epsilon.textContent;
-    var displayedVar = displayVar.textContent;
-    const displayedChar = display.textContent;
-    const displayedArrow = arrow_display.textContent;
+    let displayedVar = displayVar.textContent;
+    let displayedChar = display.textContent;
+    let displayedArrow = arrow_display.textContent;
     var displayedGLC = displayGLC.textContent;
     const previousKeyType = calculator.dataset.previousKeyType;
 
@@ -71,8 +71,12 @@ keys.addEventListener("click", (e) => {
     }
 
     if (action == "add_rule") {
+      displayedVar=displayedVar.replace(" ","")
+      displayedChar=displayedChar.replace(" ","")
+      displayedArrow=displayedArrow.replace(" ","")
       if (displayedGLC === "") {
         displayGLC.textContent = displayedVar + displayedArrow + displayedChar + "\n";
+        displayGLC.textContent = 
         displayedGLC = displayGLC.textContent;
         displayedRules.push(displayedGLC);
         glcVars.push(displayedVar);
