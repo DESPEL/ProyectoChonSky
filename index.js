@@ -177,6 +177,12 @@ keys.addEventListener("click", (e) => {
 
     if (action == "calculate") {
       document.getElementById("chomsky").style.display='';
+      document.getElementById("graph").style.display='none';
+      document.getElementById("PD_display").style.display='none';
+      document.getElementById("list-steps").innerHTML='none';
+      document.getElementById("shortdiagram").innerHTML='none';
+      document.getElementById("finaldiagram").innerHTML='none';
+      
       console.log("Calculate ? idk");
       let glc = normalizeGLC(glcVars, glcTerms, "S");
       let resu = glc.chomsky()
@@ -208,6 +214,7 @@ keys.addEventListener("click", (e) => {
     }
 
     if (action == "calculate_pushdown") {
+      document.getElementById("chomsky").style.display='none';
       document.getElementById("graph").style.display='';
       document.getElementById("PD_display").style.display='';
       document.getElementById("list-steps").innerHTML='';
