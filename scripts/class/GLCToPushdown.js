@@ -487,6 +487,7 @@ export class GLCToPushdownTransformation {
 				),
 			];
 
+
 			return { states: [newState], transitions: rulesToAdd };
 		};
 
@@ -496,8 +497,11 @@ export class GLCToPushdownTransformation {
 
 			this.addStep(
 				{ add: { states: newStates, transitions: rulesInStep } },
-				`Se parte la regla, ${ruleToBreak.read}, ${ruleToBreak.pop} -> ${ruleToBreak.push}`
+				`Se detalla la regla, ${ruleToBreak.read}, ${ruleToBreak.pop} -> ${ruleToBreak.push}`
 			);
+
+			this.addStep({}, `Se agrega la transición ${rulesInStep[0].read}, ${rulesInStep[0].pop} -> ${rulesInStep[0].push} de ${rulesInStep[0].origin} hacia ${rulesInStep[0].destination}`)
+			this.addStep({}, `Se agrega la transición ${rulesInStep[1].read}, ${rulesInStep[1].pop} -> ${rulesInStep[1].push} de ${rulesInStep[1].origin} hacia ${rulesInStep[1].destination}`)
 
 			this.generateDotText();
 
