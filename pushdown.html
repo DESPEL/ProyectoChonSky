@@ -6,15 +6,14 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="index.css">
-  <title> Teoria de Automatas</title>
- 
+  <title>GLC to Pushdown Automata</title>
 </head>
 
 <body>
   <div class='container'>
     <script type="text/javascript"
-    src="LaTeXMathML.js">
-    </script>
+      src="https://www.maths.nottingham.ac.uk/plp/pmadw/LaTeXMathML.js">
+      </script>
     <div class='fcgcalculator'>
       <div class='parent_div'>
         <div class='variable__display' contenteditable="true">S</div>
@@ -29,43 +28,32 @@
         <button class='bn1 clearb' data-action='clear'>Clear</button>
         <button class='bn1 rrb' data-action='remove_rule'>Remove rule</button>
         <button class='bn1 resetb' data-action='reset'>Reset</button>
-        <button class='key--calculate' data-action='calculate_pushdown' onclick="initPushdown()">Calculate Pushdown</button>
-        <button class='pd--calculate' data-action='calculate'>Calculate Chomsky</button>
+        <button class="key--calculate" data-action="pushdown">Pushdown</button>
+
+
       </div>
 
-      <div class='calculator__display2'>Your Context-Free Grammar will be shown here:</div>
+      <div class='calculator__display2'>Your Free Context Grammar will show
+        here:</div>
       <div class='calculator__display3'></div>
-
-      <div id="chomsky" class="calculator_display2">
-        <p class='FNC' id="FNC_title"> Here is the normalized form of the Grammar:</p>
-        <div class='FNC' id="rules"></div>
-      </div>
-      <div class="gif" id="graph"></div>
-        <div class='pd__display' id="PD_display">
-          <div id="list-steps"></div>
-          <div id="shortdiagram"></div>
-          <div id="finaldiagram"></div>
-        </div>
-    </div>
-
-    <div id="chomsky" class="calculator__display2"> 
-
-      <p class=''> Here is the normalized form of the Grammar</p>
-      <p class ='FNC' id="rules"></p>
-    </div>
-
-
-    <div id="chomsky" class="calculator__display2"> 
-
-      <p class=''> Conversion Process</p>
-      <p class ='FNC' id="process"></p>
-      <button class="bn1" onclick="nextStep()" >Next Step</button>
     </div>
   </div>
-  </div>
-  
+
+  <div style="display: flex; flex-wrap: wrap; flex-direction: row;">
+
+    <div style="width: 500px; height: 500px; background-color: white;">
+      <div id="graph" style="width: 100%; height: 100%"></div>
+    </div>
+    <div id="list-steps"></div>
+    <div style="width: 500px; height: 500px; background-color: white;">
+      <div id="shortdiagram" style="width: 100%; height: 100%"></div>
+    </div>
+    <div style="width: 500px; height: 500px; background-color: white;">
+      <div id="finaldiagram" style="width: 100%; height: 100%"></div>
+    </div>
   </div>
 
+  </div>
   <script src="https://d3js.org/d3.v5.min.js"></script>
   <script
     src="https://unpkg.com/@hpcc-js/wasm@0.3.11/dist/index.min.js"></script>
@@ -80,7 +68,6 @@
   <script type="module" src="index.js" type="js"></script>
   <script src="utils.js"></script>
   <script src="glc2chonsky.js"></script>
-  <script src="index.js"></script>
 </body>
 
 </html>

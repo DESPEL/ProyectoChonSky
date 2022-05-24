@@ -3,8 +3,7 @@ const keys = document.querySelector(".calculator__keys");
 const display = document.querySelector(".calculator__display1");
 const displayVar = document.querySelector(".variable__display");
 const arrow_display = document.querySelector(".arrow__display");
-const displayGLC = document.querySelector(".calculator__display3");
-const pbr = document.createElement("br");
+const displayGLC = document.querySelector('.calculator__display3');
 const epsilon = document.querySelector(".bepsilon");
 const fncfield = document.getElementById('rules')
 
@@ -45,6 +44,11 @@ const vars = [
   "Z",
 ];
 
+import {initPushdown} from './scripts/index.js'
+document.getElementById("PD_display").style.display='none';
+document.getElementById("graph").style.display='none';
+document.getElementById("FNC_title").style.display='none';
+
 keys.addEventListener("click", (e) => {
   if (e.target.matches("button")) {
     //action
@@ -68,8 +72,7 @@ keys.addEventListener("click", (e) => {
 
     if (action == "add_rule") {
       if (displayedGLC === "") {
-        displayGLC.textContent =
-          displayedVar + displayedArrow + displayedChar + "\n";
+        displayGLC.textContent = displayedVar + displayedArrow + displayedChar + "\n";
         displayedGLC = displayGLC.textContent;
         displayedRules.push(displayedGLC);
         glcVars.push(displayedVar);
@@ -112,6 +115,7 @@ keys.addEventListener("click", (e) => {
       /*console.log("displayedRules: ", displayedRules);
       console.log("rules index", displayedRules_index);
       console.log("var index", var_index);
+      console.log("RULE ADDED");
       console.log("vars", glcVars);
       console.log("rules", glcTerms);
       console.log("current glc:", displayGLC.textContent);
@@ -161,6 +165,9 @@ keys.addEventListener("click", (e) => {
       //console.log("last displayed Var: ", displayedVar);
       //console.log("last var in glcVars: ", glcVars[(glcVars.length)-1]);
       console.log("REMOVE RULE");
+      console.log("RULE REMOVED");
+      console.log("vars", glcVars);
+      console.log("rules", glcTerms);
     }
 
     if (action == "reset") {
@@ -169,6 +176,7 @@ keys.addEventListener("click", (e) => {
     }
 
     if (action == "calculate") {
+      document.getElementById("FNC_title").style.display='';
       console.log("Calculate ? idk");
       let glc = normalizeGLC(glcVars, glcTerms, "S");
       let resu = glc.chomsky()
@@ -198,6 +206,13 @@ keys.addEventListener("click", (e) => {
 
 
     }
+
+    if (action == "calculate_pushdown") {
+      document.getElementById("graph").style.display='';
+      document.getElementById("PD_display").style.display='';
+      initPushdown(glcVars, glcTerms)
+    }
+
   }
 });
 
