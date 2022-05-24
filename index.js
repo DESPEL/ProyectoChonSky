@@ -75,7 +75,7 @@ keys.addEventListener("click", (e) => {
       displayedChar=displayedChar.replace(" ","")
       displayedArrow=displayedArrow.replace(" ","")
       if (displayedGLC === "") {
-        displayGLC.textContent = displayedVar + displayedArrow + displayedChar + "\n";
+        displayGLC.textContent = displayedVar + displayedArrow + displayedChar + " \r\n ";
         displayGLC.textContent = 
         displayedGLC = displayGLC.textContent;
         displayedRules.push(displayedGLC);

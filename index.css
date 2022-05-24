@@ -206,6 +206,7 @@ body {
   padding: 0.5em 0.75em;
   text-align: left;
   max-width: 30em;
+  white-space: pre;
 }
 
 .FNC {
