@@ -178,6 +178,9 @@ keys.addEventListener("click", (e) => {
     if (action == "calculate_pushdown") {
       document.getElementById("graph").style.display='';
       document.getElementById("PD_display").style.display='';
+      document.getElementById("list-steps").innerHTML='';
+      document.getElementById("shortdiagram").innerHTML='';
+      document.getElementById("finaldiagram").innerHTML='';
       initPushdown(glcVars, glcTerms)
     }
 

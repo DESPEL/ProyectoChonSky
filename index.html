@@ -28,23 +28,32 @@
         <button class='bn1 clearb' data-action='clear'>Clear</button>
         <button class='bn1 rrb' data-action='remove_rule'>Remove rule</button>
         <button class='bn1 resetb' data-action='reset'>Reset</button>
-        <button class='key--calculate' data-action='calculate_pushdown' onclick="initPushdown()">Calculate Pushdown</button>
-        <button class='pd--calculate' data-action='calculate'>Calculate Chomsky</button>
+        <button class='key--calculate'
+          data-action='calculate_pushdown'>Calculate Pushdown</button>
+        <button class='pd--calculate' data-action='calculate'>Calculate
+          Chomsky</button>
       </div>
 
-      <div class='calculator__display2'>Your Context-Free Grammar will be shown here:</div>
+      <div class='calculator__display2'>Your Context-Free Grammar will be shown
+        here:</div>
       <div class='calculator__display3'></div>
 
       <div id="chomsky" class="calculator_display2">
-        <p class='FNC' id="FNC_title"> Here is the normalized form of the Grammar:</p>
+        <p class='FNC' id="FNC_title"> Here is the normalized form of the
+          Grammar:</p>
         <div class='FNC' id="rules"></div>
       </div>
-      <div class="gif" id="graph"></div>
+      <div class="gif" id="graph" style="background-color: white;"></div>
+      <div class="results">
         <div class='pd__display' id="PD_display">
-          <div id="list-steps"></div>
+          <h2 style="margin-bottom: 1.5rem;">Lista de Pasos </h2>
+          <div id="list-steps"
+            style="max-height: 500px; overflow-y: scroll; border: 2px solid white; margin: 0.5rem 1rem; padding: 0.5rem;">
+          </div>
           <div id="shortdiagram"></div>
           <div id="finaldiagram"></div>
         </div>
+      </div>
     </div>
 
   </div>
@@ -63,7 +72,7 @@
   <script type="module" src="index.js" type="js"></script>
   <script src="utils.js"></script>
   <script src="glc2chonsky.js"></script>
-  <script src="index.js"></script>
+  <!-- <script src="index.js"></script> -->
 </body>
 
 </html>
