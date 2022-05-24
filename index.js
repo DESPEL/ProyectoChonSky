@@ -47,7 +47,7 @@ const vars = [
 import {initPushdown} from './scripts/index.js'
 document.getElementById("PD_display").style.display='none';
 document.getElementById("graph").style.display='none';
-document.getElementById("FNC_title").style.display='none';
+document.getElementById("chomsky").style.display='none';
 
 keys.addEventListener("click", (e) => {
   if (e.target.matches("button")) {
@@ -176,7 +176,7 @@ keys.addEventListener("click", (e) => {
     }
 
     if (action == "calculate") {
-      document.getElementById("FNC_title").style.display='';
+      document.getElementById("chomsky").style.display='';
       console.log("Calculate ? idk");
       let glc = normalizeGLC(glcVars, glcTerms, "S");
       let resu = glc.chomsky()
@@ -235,7 +235,11 @@ function showSteps(results) {
   }
 
   for (const action of stepLog.steps) {
+    
     listedActions += action + "<br> "
+    if(stepLog.steps.indexOf(action)==0) listedActions = listedActions + "<br>"
+    
+    if(stepLog.steps.indexOf(action)+1 != stepLog.steps.length && stepLog.steps[stepLog.steps.indexOf(action)+1].includes("Elim")) listedActions += "<br>"
   }
 
 
@@ -269,7 +273,7 @@ function showSteps(results) {
   if (prevs) html = "<br> No se Necesita realizar este paso <br> " + html
 
 
-  processField.innerHTML = listedActions + "<br> Estado Final <br> " + html
+  processField.innerHTML = listedActions + "<br> Estado Final <br> <br>" + html
 
 
 
@@ -283,6 +287,7 @@ function render() {
 
 
 nxtChom.addEventListener('click',nextStep)
+prvChom.addEventListener('click',previousStep)
 function nextStep() {
   processStep += 1
   nxtChom.disabled = false
@@ -292,10 +297,9 @@ function nextStep() {
   showSteps(glcres)
 }
 function previousStep() {
-  
   processStep -= 1
   prvChom.disabled = false
-  if(processStep==4) prvChom.disabled = true
+  if(processStep==0) prvChom.disabled = true
   showSteps(glcres)
 }
 
