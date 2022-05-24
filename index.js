@@ -220,8 +220,7 @@ const processField = document.getElementById("process")
 let processStep = 0
 let processKeys = ["step1", "step2", "step3", "step4", "step5"]
 function showSteps(results) {
-  console.log("RESULTS", results)
-  listedActions = ''
+  let listedActions = ''
   let actualStep = 0
   let state
   let prevState
@@ -229,7 +228,6 @@ function showSteps(results) {
 
 
   const stepLog = results[processKeys[processStep]]
-  console.log(stepLog)
   if (stepLog.log.length > 0) {
     state = stepLog.log[stepLog.log.length - 1].newState
   } else {
@@ -243,14 +241,14 @@ function showSteps(results) {
 
 
   if (processStep == 2) {
-    console.log("****2", results)
+
     state = results['step3dedupe'][0]['newState']
   }
   if (processStep == 4) {
-    console.log("****4")
+
     state = results['step5dedupe'][0]['newState']
   }
-  console.log(state)
+
   let html = ''
 
   if (prevs) {
@@ -268,10 +266,10 @@ function showSteps(results) {
 
   }
 
-  if (prevs) html = "There is no need to do this step <br> " + html
+  if (prevs) html = "<br> No se Necesita realizar este paso <br> " + html
 
 
-  processField.innerHTML = listedActions + "END STATE <br> " + html
+  processField.innerHTML = listedActions + "<br> Estado Final <br> " + html
 
 
 
@@ -283,54 +281,44 @@ function render() {
   translate()
 }
 
+
+nxtChom.addEventListener('click',nextStep)
 function nextStep() {
   processStep += 1
+  nxtChom.disabled = false
+  if(processStep==4) nxtChom.disabled = true
+
   console.log(glcres, processStep)
   showSteps(glcres)
 }
 function previousStep() {
+  
   processStep -= 1
+  prvChom.disabled = false
+  if(processStep==4) prvChom.disabled = true
   showSteps(glcres)
 }
 
 function getPrevState(step, results) {
 
-
-  let actualStep = 0
   let state
   let prevs = false
 
-  for (const i of Object.values(results)) {
+  const stepLog = results[processKeys[step]]
+  if (stepLog.log.length > 0) {
+    state = stepLog.log[stepLog.log.length - 1].newState
+  } else {
+    prevs = true
+  }
 
-    if (actualStep > step) break
-    if (actualStep != step) {
-      actualStep += 1
-      continue
-    }
+  if (processStep == 2) {
 
+    state = results['step3dedupe'][0]['newState']
+  }
+  if (processStep == 4) {
 
-    if (!i.steps) {
-
-      continue
-    }
-    if (i.log.length == 0) {
-      prevs = true
-    }
-    else {
-      state = i.log[i.log.length - 1].newState
-    }
-    if (actualStep == step) {
-      actualStep += 1
-    }
-
-    if (step == 2) {
-
-      state = results['step3dedupe'][0]['newState']
-    }
-    if (step == 4) {
-
-      state = results['step5dedupe'][0]['newState']
-    }
+    state = results['step5dedupe'][0]['newState']
+  }
 
     if (prevs) return getPrevState(step - 1, results)
     return state
@@ -339,4 +327,4 @@ function getPrevState(step, results) {
   }
 
 
-}
+
