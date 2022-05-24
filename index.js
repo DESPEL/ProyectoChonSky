@@ -127,7 +127,7 @@ keys.addEventListener("click", (e) => {
 
     if (action == "clear") {
       display.textContent = "";
-      console.log("clear");
+      //console.log("clear");
     }
 
     if (action == "remove_rule") {
@@ -141,8 +141,8 @@ keys.addEventListener("click", (e) => {
           dupcount--;
         }
         var_index = var_index - 1;
-        console.log(vars[var_index]);
-        console.log(glcVars[var_index]);
+        // console.log(vars[var_index]);
+        // console.log(glcVars[var_index]);
         displayedRules_index -= 1;
         displayedRules.pop();
         if (var_index <= 0) {
@@ -164,15 +164,15 @@ keys.addEventListener("click", (e) => {
       //console.log("rules", glcTerms);
       //console.log("last displayed Var: ", displayedVar);
       //console.log("last var in glcVars: ", glcVars[(glcVars.length)-1]);
-      console.log("REMOVE RULE");
-      console.log("RULE REMOVED");
-      console.log("vars", glcVars);
-      console.log("rules", glcTerms);
+      // console.log("REMOVE RULE");
+      // console.log("RULE REMOVED");
+      // console.log("vars", glcVars);
+      // console.log("rules", glcTerms);
     }
 
     if (action == "reset") {
       location.reload(true);
-      console.log("reset");
+      //console.log("reset");
     }
 
     if (action == "calculate") {
@@ -189,9 +189,9 @@ keys.addEventListener("click", (e) => {
 
       let res = glc.prettyPrint()
       let html = ''
-      console.log(res)
+      // console.log(res)
       for (const [key, value] of Object.entries(res)) {
-        console.log(key)
+        // console.log(key)
         if (key == glc.s0.value) {
           html = "$ " + key + " \\rightarrow " + value.join(" | ") + "$ <br> " + html
 
@@ -203,7 +203,7 @@ keys.addEventListener("click", (e) => {
       }
       showSteps(resu)
       glcres = resu
-      console.log(html)
+      // console.log(html)
       fncfield.innerHTML = html
 
       render()
@@ -268,7 +268,7 @@ function showSteps(results) {
   if (prevs) {
     state = getPrevState(processStep - 1, results)
   }
-  console.log("------------------", prevState, state, actualStep, processStep)
+  //console.log("------------------", prevState, state, actualStep, processStep)
   for (const [key, value] of Object.entries(state.prettyPrint())) {
     if (key == state.s0.value) {
       html = "$ " + key + " \\rightarrow " + value.join(" | ") + "$ <br> " + html
@@ -300,17 +300,29 @@ nxtChom.addEventListener('click',nextStep)
 prvChom.addEventListener('click',previousStep)
 function nextStep() {
   processStep += 1
-  nxtChom.disabled = false
-  if(processStep==4) nxtChom.disabled = true
-
-  console.log(glcres, processStep)
-  showSteps(glcres)
+ 
+  
+  updateState()
 }
 function previousStep() {
   processStep -= 1
+  updateState()
+  
+  
+}
+
+function updateState(){
+  nxtChom.disabled = false
+  if(processStep==4) nxtChom.disabled = true
+  nxtChom.style.display = ''
+  if(processStep==4) nxtChom.style.display = 'none'
+
   prvChom.disabled = false
   if(processStep==0) prvChom.disabled = true
+  prvChom.style.display=''
+  if(processStep==0) prvChom.style.display='none'
   showSteps(glcres)
+
 }
 
 function getPrevState(step, results) {

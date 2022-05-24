@@ -176,7 +176,7 @@ class GLC {
 
   prettyPrint() {
     for (const v of Object.keys(this.variableMapping)) {
-      console.log(`${v}: `, this.variableMapping[v].map((v) => v.result.map(v=>v.value)))
+      //console.log(`${v}: `, this.variableMapping[v].map((v) => v.result.map(v=>v.value)))
     }
   }
 
@@ -219,6 +219,7 @@ class GLC {
       // Then we add the new production without the epsilon
       // only if it produces one or more values
       const productionWithoutEpsilon = production.removeEpsilons()
+      console.log("WE", productionWithoutEpsilon)
       if (productionWithoutEpsilon.result.length >= 1) {
         this.addProduction(productionWithoutEpsilon)
         stepsLog.push("Añadimos $"+productionWithoutEpsilon.resultString()+"$")
@@ -237,7 +238,7 @@ class GLC {
       // we first find all the productions that depend on the variable that we want to remove
       const dependentProductions = Array.from(this.dependencyMapping[production.variable.value])
       // then, for each dependency we want to add new productions without the variable mapping
-      console.log(dependentProductions)
+      console.log("PRODUCCIONES DEPENDIENTES",dependentProductions)
       let newProductions = []
       for (const dependency of dependentProductions) {
 
@@ -245,6 +246,7 @@ class GLC {
         let indices = []
         for (let i = 0; i < dependency.result.length; i++) {
           const partial = dependency.result[i]
+          console.log("COMPARISON", partial.value,' - ',production.variable.value)
           if (partial.value == production.variable.value)
             indices.push(i)
         }
@@ -259,10 +261,10 @@ class GLC {
         // the powerset now contains the replacements that we are going to perform over the productions
         // and the productionWithoutEpsilon.result contains the value to add
 
-
+        console.log("powerset",idxPowerset)
         for (const replaceIndices of idxPowerset) {
           let result = []
-          console.log(replaceIndices)
+          console.log("Indices a eliminar",replaceIndices)
           for (let i = 0; i < dependency.result.length; i++) {
             if (replaceIndices.includes(i)) {
               // if we find the variable, we replace it with the result of the production
@@ -274,6 +276,7 @@ class GLC {
               result.push(dependency.result[i])
             }
           }
+          console.log(result)
           let newProduction = new Production(dependency.variable, result)
           if (newProduction.result.length >= 1)
             newProductions.push(newProduction)
@@ -302,7 +305,7 @@ class GLC {
     return {log:log, steps:stepsLog}
   }
   chomskyStep3() {
-    console.log("S3 REMOVE TRANSITIVE")
+    //console.log("S3 REMOVE TRANSITIVE")
     let log = []
     let stepsLog = []
   
@@ -358,7 +361,7 @@ class GLC {
       }
 
       const transitiveResults = this.variableMapping[transitiveProduction.result[0].value]
-      console.log(this.variableMapping)
+      //console.log(this.variableMapping)
       const newProductions = []
       for (const childProduction of transitiveResults) {
         let prod = new Production(
@@ -368,7 +371,7 @@ class GLC {
         
         newProductions.push(prod)
       }
-      console.log('S3 - Adding new productions: ', newProductions)
+      //console.log('S3 - Adding new productions: ', newProductions)
       for (const production of newProductions) {
         this.addProduction(production)
         if(!stepsLog.includes("Añadimos $"+production.resultString()+"$"))
@@ -418,7 +421,7 @@ class GLC {
       for (const newProduction of newProductions) {
         this.addProduction(newProduction)
         if(!stepsLog.includes("Añadimos $"+newProduction.resultString()+"$")){
-          console.log("ADDED PROD")
+          //console.log("ADDED PROD")
           stepsLog.push("Añadimos $"+newProduction.resultString()+"$")
         }
 
@@ -435,7 +438,7 @@ class GLC {
     return {log:log, steps:stepsLog}
   }
   chomskyStep5() {
-    console.log("REPLACE TERMINALS WITH VARIABLES")
+    //console.log("REPLACE TERMINALS WITH VARIABLES")
     let log = []
     let stepsLog=[]
 
@@ -444,7 +447,7 @@ class GLC {
     let currentZ = 1
     let terminalMapping = {}
     let modifiedProductions = []
-    console.log('S5 - Current productions: ', this.productions)
+    //console.log('S5 - Current productions: ', this.productions)
     for (const production of Array.from(this.productions)) {
       if ((production.result.length < 2) || (!production.hasTerminals()))
         continue
@@ -539,7 +542,7 @@ class GLC {
     let res ={}
     for (const v of Object.keys(this.variableMapping)) {
       res[v]=this.variableMapping[v].map((v) => v.result.map(v=>v.value).join(""))
-      console.log(`${v}: `, this.variableMapping[v].map((v) => v.result.map(v=>v.value).join("")))
+      //console.log(`${v}: `, this.variableMapping[v].map((v) => v.result.map(v=>v.value).join("")))
     }
     return res
   }
