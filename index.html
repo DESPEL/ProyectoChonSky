@@ -6,14 +6,15 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="index.css">
-  <title>Document</title>
+  <title> Teoria de Automatas</title>
+ 
 </head>
 
 <body>
   <div class='container'>
     <script type="text/javascript"
-      src="https://www.maths.nottingham.ac.uk/plp/pmadw/LaTeXMathML.js">
-      </script>
+    src="LaTeXMathML.js">
+    </script>
     <div class='fcgcalculator'>
       <div class='parent_div'>
         <div class='variable__display' contenteditable="true">S</div>
@@ -22,11 +23,11 @@
           placeholder="Type here"></div>
       </div>
       <div class='calculator__keys'>
-        <button class='bn1' data-action='add_rule'>Add rule</button>
+        <button class='bn1' data-action='add_rule'>Añadir Regla</button>
         <button class='bn1'>|</button>
         <button class='bn1 bepsilon'>$\epsilon$</button>
         <button class='bn1 clearb' data-action='clear'>Clear</button>
-        <button class='bn1 rrb' data-action='remove_rule'>Remove rule</button>
+        <button class='bn1 rrb' data-action='remove_rule'>Eliminar regla</button>
         <button class='bn1 resetb' data-action='reset'>Reset</button>
         <button class='key--calculate'
           data-action='calculate_pushdown'>Calculate Pushdown</button>
@@ -42,6 +43,16 @@
         <p class='FNC' id="FNC_title"> Here is the normalized form of the
           Grammar:</p>
         <div class='FNC' id="rules"></div>
+
+        
+        <div class="calculator__display2"> 
+
+          <p class=''> Proceso de Conversión </p>
+          <p class ='FNC' id="process"></p>
+          <button class="bn1" id="prvChom" >$\leftarrow$ Paso Anterior</button>
+          <button class="bn1" id="nxtChom" >Siguiente Paso $\rightarrow$</button>
+          
+        </div>
       </div>
       <div class="gif" id="graph" style="background-color: white;"></div>
       <div class="results">
@@ -56,6 +67,12 @@
       </div>
     </div>
 
+
+
+    
+  </div>
+  </div>
+  
   </div>
 
   <script src="https://d3js.org/d3.v5.min.js"></script>
