@@ -16,6 +16,14 @@ var displayedRules_index = 0;
 var glcVars = [];
 var glcTerms = [];
 var displayedRules = [];
+
+function normalizeRules(){
+  glcVars = glcVars.map(function(value){
+    return value.replace(/\s/g, "")
+  })
+  glcTerms = glcTerms.map(elem=>{ return elem.replace(/\s/g, "")})
+  console.log(results,res)
+}
 const vars = [
   "A",
   "B",
@@ -71,9 +79,9 @@ keys.addEventListener("click", (e) => {
     }
 
     if (action == "add_rule") {
-      displayedVar=displayedVar.replace(" ","")
-      displayedChar=displayedChar.replace(" ","")
-      displayedArrow=displayedArrow.replace(" ","")
+      displayedVar=displayedVar.replace(/\s/g, "")
+      displayedChar=displayedChar.replace(/\s/g, "")
+      displayedArrow=displayedArrow.replace(/\s/g, "")
       if (displayedGLC === "") {
         displayGLC.textContent = displayedVar + displayedArrow + displayedChar + " \r\n";
         displayGLC.textContent = 
@@ -188,6 +196,7 @@ keys.addEventListener("click", (e) => {
       document.getElementById("finaldiagram").innerHTML='none';
       
       console.log("Calculate ? idk");
+      normalizeRules()
       let glc = normalizeGLC(glcVars, glcTerms, "S");
       let resu = glc.chomsky()
 
@@ -224,6 +233,9 @@ keys.addEventListener("click", (e) => {
       document.getElementById("list-steps").innerHTML='';
       document.getElementById("shortdiagram").innerHTML='';
       document.getElementById("finaldiagram").innerHTML='';
+      normalizeRules()
+
+      
       initPushdown(glcVars, glcTerms)
     }
 
