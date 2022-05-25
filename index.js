@@ -22,7 +22,7 @@ function normalizeRules(){
     return value.replace(/\s/g, "")
   })
   glcTerms = glcTerms.map(elem=>{ return elem.replace(/\s/g, "")})
-  console.log(results,res)
+  
 }
 const vars = [
   "A",
